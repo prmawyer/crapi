@@ -247,12 +247,21 @@ jobs:
           IS_TESTING=True coverage run ./manage.py test --no-input crapi
           coverage report
           coverage xml -o coverage.xml
-
-      - name: Publish Coverage for workshop
-        uses: orgoro/coverage@v3.2
+          
+      - name: Coverage Report for workshop
+        uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-            coverageFile: services/workshop/coverage.xml
-            token: ${{ secrets.GITHUB_TOKEN }}
+          filename: 'services/workshop/coverage.xml'
+          badge: true
+          format: 'markdown'
+          output: 'both'
+      
+    - name: Add Coverage PR Comment
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: github.event_name == 'pull_request'
+      with:
+        recreate: true
+        path: code-coverage-results.md
 
       - name: node prettier
         run: |
