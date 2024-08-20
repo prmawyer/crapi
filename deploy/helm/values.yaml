@@ -187,13 +187,25 @@ mongodb:
     mongoPassword: crapisecretpassword
     mongoDbName: crapi
     mongoUri: "admin:crapisecretpassword@mongodb:27017"
-  pvc:
-    name: mongodb-pv-claim
-    labels:
-      app: mongodb
-    resources:
-      requests:
-        storage: 2Gi
+  storage: 
+    type: "manual"
+    pv:
+      name: mongodb-pv
+      labels:
+        app: mongodb
+      resources:
+        requests:
+          storage: 2Gi
+      hostPath: /mnt/test
+      accessModes: ReadWriteOnce
+      
+  # pvc:
+  #   name: mongodb-pv-claim
+  #   labels:
+  #     app: mongodb
+  #   resources:
+  #     requests:
+  #       storage: 2Gi
   serviceSelectorLabels:
     app: mongodb
   podLabels:
