@@ -33,13 +33,10 @@ spec:
               name: mongodb-data
       volumes:
         - name: mongodb-data
-          persistentVolume:
-            claimName: {{.Values.mongodb.storage.pv.name}}
-          # {{- if eq .Values.mongodb.storage.type "manual" }}
-          # persistentVolume:
-          #   claimName: {{.Values.mongodb.storage.pv.name}}
-          # ---
-          # {{- else }}
-          # persistentVolumeClaim:
-          #   claimName: {{.Values.mongodb.storage.pvc.name}}
-          # {{- end }}
+          {{- if eq .Values.mongodb.storage.type "manual" }}
+          hostPath:
+            path: {{ .Values.mongodb.storage.pv.hostPath }}
+          {{- else }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.mongodb.storage.pvc.name }}
+          {{- end }}

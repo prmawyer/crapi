@@ -8,7 +8,7 @@ metadata:
     {{- toYaml .Values.mongodb.storage.pv.labels | nindent 4 }}
 spec:
   capacity:
-    storage: {{ .Values.mongodb.storage.pv.resources.requests.storage }}
+    storage: {{ .Values.mongodb.storage.pv.resources.storage }}
   accessModes:
     - {{ .Values.mongodb.storage.pv.accessModes }}
   hostPath:
@@ -26,5 +26,5 @@ spec:
   accessModes:
     - {{ .Values.mongodb.storage.pvc.accessModes }}
   resources:
-    storage: {{ .Values.mongodb.storage.pvc.resources.requests.storage }}
+    {{- toYaml .Values.mongodb.storage.pvc.resources | nindent 4 }}
 {{- end }}
