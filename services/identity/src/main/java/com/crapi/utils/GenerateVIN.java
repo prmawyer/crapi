@@ -1,16 +1,16 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the “License”);
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Licensed under the Apache License, Version 2.0 (the “License”);
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an “AS IS” BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.crapi.utils;
 
@@ -32,13 +32,17 @@ public class GenerateVIN {
     random = new Random(seed);
   }
 
-  /** @return random generate pin code for add vehicle */
+  /**
+  * @return random generate pin code for add vehicle
+  */
   public String generatePincode() {
     pincode += getNum(3);
     return pincode;
   }
 
-  /** @return randomly generated VIN */
+  /**
+  * @return randomly generated VIN
+  */
   public String generateVIN() {
     StringBuilder vin = new StringBuilder();
     for (int i = 0; i < 17; i++) {
@@ -50,7 +54,6 @@ public class GenerateVIN {
     }
     return vin.toString();
   }
-
 
   public String getChar(int num) {
     String randStr = "";
