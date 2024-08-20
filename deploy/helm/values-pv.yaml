@@ -188,24 +188,24 @@ mongodb:
     mongoDbName: crapi
     mongoUri: "admin:crapisecretpassword@mongodb:27017"
   storage: 
-    # type: "manual"
-    # pv:
-    #   name: mongodb-pv
-    #   labels:
-    #     app: mongodb
-    #   resources:
-    #     rstorage: 2Gi
-    #   hostPath: /mnt/test
-    #   accessModes: ReadWriteOnce
-    type: "default"
-    pvc:
-      name: mongodb-pv-claim
+    type: "manual"
+    pv:
+      name: mongodb-pv
       labels:
         app: mongodb
-      accessModes: ReadWriteOnce
       resources:
-        requests:
-          storage: 2Gi
+        rstorage: 2Gi
+      hostPath: /mnt/test
+      accessModes: ReadWriteOnce
+    # type: "default"
+    # pvc:
+    #   name: mongodb-pv-claim
+    #   labels:
+    #     app: mongodb
+    #   accessModes: ReadWriteOnce
+    #   resources:
+    #     requests:
+    #       storage: 2Gi
   serviceSelectorLabels:
     app: mongodb
   podLabels:
@@ -234,24 +234,24 @@ postgresdb:
     postgresPassword: crapisecretpassword
     postgresDbName: crapi
   storage:
-    # type: "manual"
-    # pv:
-    #   name: postgres-pv
-    #   labels:
-    #     app: postgresdb
-    #   resources:
-    #     storage: 2Gi
-    #   hostPath: /mnt/test
-    #   accessModes: ReadWriteOnce
-    type: "default"
-    pvc:
-      name: postgres-pv-claim
+    type: "manual"
+    pv:
+      name: postgres-pv
       labels:
         app: postgresdb
-      accessModes: ReadWriteOnce
       resources:
-        requests:
-          storage: 2Gi
+        storage: 2Gi
+      hostPath: /mnt/test
+      accessModes: ReadWriteOnce
+    # type: "default"
+    # pvc:
+    #   name: postgres-pv-claim
+    #   labels:
+    #     app: postgresdb
+    #   accessModes: ReadWriteOnce
+    #   resources:
+    #     requests:
+    #       storage: 2Gi
   serviceSelectorLabels:
     app: postgresdb
   podLabels:
