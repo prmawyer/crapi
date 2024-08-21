@@ -13,7 +13,6 @@ mongodb:
       name: mongodb-pv-claim
       labels:
         app: mongodb
-      accessModes: ReadWriteOnce
       resources:
         requests:
           storage: 2Gi
@@ -28,7 +27,6 @@ postgresdb:
       resources:
         storage: 2Gi
       hostPath: /mnt/test
-      accessModes: ReadWriteOnce
     pvc:
       name: postgres-pv-claim
       labels:

@@ -114,13 +114,21 @@ You can change the smtp configuration if required however all emails with domain
     ```
     git clone [REPOSITORY-URL]
     ```
-
 2. Install the helm chart
+    
+    Inorder to add persistent volume and configure the hostPath (To manually mount the data to a specific location), Update values-pv.yaml and use it to install helm charts. 
+    ```
+    cd deploy/helm
+
+    helm install --namespace crapi crapi . --values values-pv.yaml
+    ```
+    Otherwise install the helm chart normally. 
     ```
     cd deploy/helm
 
     helm install --namespace crapi crapi . --values values.yaml
     ```
+
 3. If using minikube, create a tunnel to initialize the LoadBalancers
     ```
     minikube tunnel --alsologtostderr
