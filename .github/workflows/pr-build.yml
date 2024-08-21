@@ -22,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PLATFORMS: "linux/amd64,linux/arm64"
+    permissions:
+      pull-requests: write # Required to post comments
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -244,16 +246,9 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PR_RUN_ID: ${{ github.event.workflow_run.id }}
-          SUBPROJECT_ID: project-1
-          COVERAGE_PATH: project_1
+          SUBPROJECT_ID: workshop
+          COVERAGE_PATH: services/workshop
 
-      - name: Post comment
-        uses: py-cov-action/python-coverage-comment-action@v3
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PR_RUN_ID: ${{ github.event.workflow_run.id }}
-          SUBPROJECT_ID: project-2
-          COVERAGE_PATH: project_2/src
       - name: node prettier
         run: |
           cd services/web
