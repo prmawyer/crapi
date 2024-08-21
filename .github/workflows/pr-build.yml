@@ -249,11 +249,11 @@ jobs:
           coverage report
           coverage xml -o coverage.xml
 
-      # - name: Publish Coverage for workshop
-      #   uses: orgoro/coverage@v3.2
-      #   with:
-      #       coverageFile: services/workshop/coverage.xml
-      #       token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish Coverage for workshop
+        uses: orgoro/coverage@v3.2
+        with:
+            coverageFile: services/workshop/coverage.xml
+            token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: node prettier
         run: |
