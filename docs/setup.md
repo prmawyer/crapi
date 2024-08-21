@@ -116,7 +116,8 @@ You can change the smtp configuration if required however all emails with domain
     ```
 2. Install the helm chart
     
-    Inorder to add persistent volume and configure the hostPath (To manually mount the data to a specific location), Update values-pv.yaml and use it to install helm charts. 
+    Inorder to manually mount the data to a specific location, hostPath should be updated in values-pv.yaml, and used to install the helm charts. 
+    
     ```
     cd deploy/helm
 
