@@ -188,14 +188,6 @@ mongodb:
     mongoDbName: crapi
     mongoUri: "admin:crapisecretpassword@mongodb:27017"
   storage: 
-    # type: "manual"
-    # pv:
-    #   name: mongodb-pv
-    #   labels:
-    #     app: mongodb
-    #   resources:
-    #     rstorage: 2Gi
-    #   hostPath: /mnt/test
     type: "default"
     pvc:
       name: mongodb-pv-claim
@@ -232,14 +224,6 @@ postgresdb:
     postgresPassword: crapisecretpassword
     postgresDbName: crapi
   storage:
-    # type: "manual"
-    # pv:
-    #   name: postgres-pv
-    #   labels:
-    #     app: postgresdb
-    #   resources:
-    #     storage: 2Gi
-    #   hostPath: /mnt/test
     type: "default"
     pvc:
       name: postgres-pv-claim
