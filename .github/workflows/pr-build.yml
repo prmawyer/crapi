@@ -238,22 +238,22 @@ jobs:
           files: |
             **/test-results/**/*.xml
             **/test-results/**/*.json
-
-      - name: Run workshop coverage
-        run: |
-          cd services/workshop
-          source venv/bin/activate
-          source .env
-          IS_TESTING=True coverage run ./manage.py test --no-input crapi
-          coverage report
-          coverage xml -o coverage.xml
-
-      - name: Publish Coverage for workshop
-        uses: orgoro/coverage@v3.1
+      # Add python coverage: 
+      - name: Post comment
+        uses: py-cov-action/python-coverage-comment-action@v3
         with:
-            coverageFile: services/workshop/coverage.xml
-            token: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PR_RUN_ID: ${{ github.event.workflow_run.id }}
+          SUBPROJECT_ID: project-1
+          COVERAGE_PATH: project_1
 
+      - name: Post comment
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PR_RUN_ID: ${{ github.event.workflow_run.id }}
+          SUBPROJECT_ID: project-2
+          COVERAGE_PATH: project_2/src
       - name: node prettier
         run: |
           cd services/web
