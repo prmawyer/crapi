@@ -36,10 +36,5 @@ spec:
               subPath: postgres
       volumes:
         - name: postgresdb-data
-          {{- if eq .Values.postgresdb.storage.type "manual" }}
-          hostPath:
-            path: {{ .Values.postgresdb.storage.pv.hostPath }}
-          {{- else }}
           persistentVolumeClaim:
             claimName: {{ .Values.postgresdb.storage.pvc.name }}
-          {{- end }}

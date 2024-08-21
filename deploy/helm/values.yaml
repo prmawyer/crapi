@@ -196,13 +196,11 @@ mongodb:
     #   resources:
     #     rstorage: 2Gi
     #   hostPath: /mnt/test
-    #   accessModes: ReadWriteOnce
     type: "default"
     pvc:
       name: mongodb-pv-claim
       labels:
         app: mongodb
-      accessModes: ReadWriteOnce
       resources:
         requests:
           storage: 2Gi
@@ -242,13 +240,11 @@ postgresdb:
     #   resources:
     #     storage: 2Gi
     #   hostPath: /mnt/test
-    #   accessModes: ReadWriteOnce
     type: "default"
     pvc:
       name: postgres-pv-claim
       labels:
         app: postgresdb
-      accessModes: ReadWriteOnce
       resources:
         requests:
           storage: 2Gi
