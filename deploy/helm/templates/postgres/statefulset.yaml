@@ -35,6 +35,6 @@ spec:
               name: postgres-data
               subPath: postgres
       volumes:
-        - name: postgresdb-data
+        - name: postgres-data
           persistentVolumeClaim:
             claimName: {{ .Values.postgresdb.storage.pvc.name }}
