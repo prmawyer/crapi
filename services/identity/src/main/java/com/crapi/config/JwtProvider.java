@@ -23,8 +23,8 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTParser;
-import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.PlainJWT;
+import com.nimbusds.jwt.SignedJWT;
 import io.jsonwebtoken.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -143,8 +143,7 @@ public class JwtProvider {
    */
   public boolean validateJwtToken(String authToken) {
     try {
-      if (JWTParser.parse(authToken) instanceof PlainJWT)
-        return true;
+      if (JWTParser.parse(authToken) instanceof PlainJWT) return true;
       SignedJWT signedJWT = SignedJWT.parse(authToken);
       JWSHeader header = signedJWT.getHeader();
       Algorithm alg = header.getAlgorithm();
