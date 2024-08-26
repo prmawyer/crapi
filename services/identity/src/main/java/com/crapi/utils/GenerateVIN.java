@@ -14,12 +14,23 @@
 
 package com.crapi.utils;
 
+import java.util.Random;
+
 public class GenerateVIN {
 
-  static String charsequence = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  static String charsequence = "ABCDEFGHJKLMNPRSTUVWXYZ"; // I, O, Q are excluded
   static String num = "0123456789";
   String vin = "";
   String pincode = "";
+  Random random;
+
+  public GenerateVIN() {
+    random = new Random();
+  }
+
+  public GenerateVIN(long seed) {
+    random = new Random(seed);
+  }
 
   /** @return random generate pin code for add vehicle */
   public String generatePincode() {
@@ -27,33 +38,40 @@ public class GenerateVIN {
     return pincode;
   }
 
-  /** @return rendom generate VIN for vehicle */
+  /** @return randomly generated VIN */
   public String generateVIN() {
-    vin += getNum(0) + getChar(3) + getNum(1) + getChar(3) + getNum(5);
-    return vin;
+    StringBuilder vin = new StringBuilder();
+    for (int i = 0; i < 17; i++) {
+      if (random.nextBoolean()) {
+        vin.append(randomCharacter());
+      } else {
+        vin.append(randomNumber());
+      }
+    }
+    return vin.toString();
   }
 
   public String getChar(int num) {
-    String random = "";
-    for (int j = 0; j <= num; j++) random += randomCharacter();
-    return random;
+    String randStr = "";
+    for (int j = 0; j <= num; j++) randStr += randomCharacter();
+    return randStr;
   }
 
   public String getNum(int num) {
-    String random = "";
-    for (int k = 0; k <= num; k++) random += randomNumber();
-    return random;
+    String randNum = "";
+    for (int k = 0; k <= num; k++) randNum += randomNumber();
+    return randNum;
   }
 
   public String randomCharacter() {
     int n = charsequence.length();
-    int r = (int) (n * Math.random());
+    int r = random.nextInt(n);
     return charsequence.substring(r, r + 1);
   }
 
   public String randomNumber() {
     int n = num.length();
-    int r = (int) (n * Math.random());
+    int r = random.nextInt(n);
     return num.substring(r, r + 1);
   }
 }
