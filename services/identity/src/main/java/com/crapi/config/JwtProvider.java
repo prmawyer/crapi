@@ -24,7 +24,6 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
@@ -169,10 +168,8 @@ public class JwtProvider {
    * @return validate token expire and true boolean
    */
   public boolean validateJwtToken(String authToken) {
-    JWT jwt = null;
     try {
-      jwt = JWTParser.parse(authToken);
-      SignedJWT signedJWT = (SignedJWT) jwt;
+      SignedJWT signedJWT = SignedJWT.parse(authToken);
       JWSHeader header = signedJWT.getHeader();
       Algorithm alg = header.getAlgorithm();
       boolean valid = false;
@@ -198,8 +195,12 @@ public class JwtProvider {
       }
 
     } catch (ParseException e) {
-      if (jwt instanceof PlainJWT) return true;
-      logger.error("Could not parse JWT Token -> Message: %d", e);
+      try {
+        PlainJWT jwt = PlainJWT.parse(authToken);
+        return true;
+      } catch (ParseException parseException) {
+        log.error("Could not parse JWT Token -> Message: %d", parseException);
+      }
     } catch (JOSEException e) {
       log.error("RSA JWK Extraction failed -> Message: %d", e);
     }
