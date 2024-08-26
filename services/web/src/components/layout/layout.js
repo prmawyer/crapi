@@ -41,6 +41,7 @@ import ForumContainer from "../../containers/forum/forum";
 import UnlockContainer from "../../containers/unlock/unlock";
 import NewPostContainer from "../../containers/newPost/newPost";
 import PostContainer from "../../containers/post/post";
+import NotFoundConponent from "../../components/notFound/notFound";
 
 import { logOutUserAction } from "../../actions/userActions";
 import { isAccessTokenValid } from "../../utils";
@@ -75,7 +76,10 @@ const AfterLogin = ({
             });
           } else {
             if (!componentRole || (componentRole && componentRole === userRole))
-              return <Component {...props} />;
+              return <>
+                <Route path="/" component={NavBar} />
+                <Component {...props} />
+              </>
             if (userRole === roleTypes.ROLE_MECHANIC)
               return (
                 <Redirect
@@ -126,7 +130,10 @@ const BeforeLogin = ({ component: Component, isLoggedIn, ...rest }) => {
       {...rest}
       render={(props) =>
         !hasUserLoggedIn ? (
-          <Component {...props} />
+          <>
+            <Route path="/" component={NavBar} />
+            <Component {...props} />
+          </>
         ) : (
           <Redirect
             to={{ pathname: "/dashboard", state: { from: props.location } }}
@@ -174,9 +181,13 @@ const StyledComp = connect(
   return (
     <Spin spinning={props.fetchingData} className="spinner">
       <Layout style={{ minHeight: windowHeight }}>
-        <Route path="/" component={NavBar} />
         <Content className="layout-content">
           <Switch>
+            <BeforeLogin
+                path="/"
+                component={LoginContainer}
+                isLoggedIn={props.isLoggedIn}
+            />
             <BeforeLogin
               path="/login"
               component={LoginContainer}
@@ -311,24 +322,7 @@ const StyledComp = connect(
               accessToken={props.accessToken}
               logOutUser={props.logOutUser}
             />
-            <Route
-              render={() => {
-                return (
-                  <Redirect
-                    to={{
-                      pathname: `${
-                        !props.isLoggedIn
-                          ? "/login"
-                          : props.role === roleTypes.ROLE_USER
-                            ? "/dashboard"
-                            : "/mechanic-dashboard"
-                      }`,
-                      state: { from: props.location },
-                    }}
-                  />
-                );
-              }}
-            />
+            <Route component={NotFoundConponent} />
           </Switch>
         </Content>
       </Layout>
