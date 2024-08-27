@@ -26,8 +26,6 @@ import OTPFormContainer from "../../containers/otpForm/otpForm";
 const { Step } = Steps;
 
 const ForgotPassword = (props) => {
-  const { history } = props;
-
   const steps = [
     {
       title: "Email Verification",
@@ -61,15 +59,11 @@ const ForgotPassword = (props) => {
             setCurrentStep={handleStepChange}
             email={email}
             onMailChange={handleEmailChange}
-            history={history}
           />
         </div>
       </Card>
     </div>
   );
-};
-ForgotPassword.propTypes = {
-  history: PropTypes.object,
 };
 
 export default ForgotPassword;

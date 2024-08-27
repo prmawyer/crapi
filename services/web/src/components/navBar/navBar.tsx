@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -18,13 +18,26 @@ import "./nav.css";
 import { Button, Dropdown, Menu, Avatar, Layout, Space } from "antd";
 import { LogoutOutlined, DownOutlined } from "@ant-design/icons";
 import React from "react";
-
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { connect, ConnectedProps } from "react-redux";
 import { logOutUserAction } from "../../actions/userActions";
 import defaultProficPic from "../../assets/default_profile_pic.png";
 
 const { Header } = Layout;
+
+interface RootState {
+  userReducer: {
+    accessToken: string;
+    name: string;
+    isLoggedIn: boolean;
+  };
+  profileReducer: {
+    profilePicData: string;
+  };
+}
+
+interface NavbarProps extends PropsFromRedux {}
+
 /**
  * top navigation bar that contains
  * if not logged in:
@@ -34,8 +47,9 @@ const { Header } = Layout;
  * dropdown to navigate to change Password or My Profile
  * dropdown alos consists the logout button
  */
-const Navbar = (props) => {
-  const { history, logOutUser, isLoggedIn, name, profilePicData } = props;
+const Navbar: React.FC<NavbarProps> = (props) => {
+  const { logOutUser, isLoggedIn, name, profilePicData } = props;
+  const navigate = useNavigate();
 
   const logout = () => {
     logOutUser({
@@ -45,9 +59,9 @@ const Navbar = (props) => {
     });
   };
 
-  const takeMenuAction = (input) => {
-    if (input.key === "password") history.push(`/reset-password`);
-    else if (input.key === "profile") history.push(`/my-profile`);
+  const takeMenuAction = (input: { key: string }) => {
+    if (input.key === "password") navigate(`/reset-password`);
+    else if (input.key === "profile") navigate(`/my-profile`);
     else if (input.key === "logout") logout();
   };
 
@@ -60,10 +74,10 @@ const Navbar = (props) => {
     </Menu>
   );
 
-  const takeNavigationAction = (input) => {
-    if (input.key === "dashboard") history.push(`/`);
-    else if (input.key === "shop") history.push(`/shop`);
-    else if (input.key === "forum") history.push(`/forum`);
+  const takeNavigationAction = (input: { key: string }) => {
+    if (input.key === "dashboard") navigate(`/`);
+    else if (input.key === "shop") navigate(`/shop`);
+    else if (input.key === "forum") navigate(`/forum`);
   };
 
   const menuNavigation = () => (
@@ -81,7 +95,7 @@ const Navbar = (props) => {
   return (
     <Header>
       <Space className="top-nav-left">
-        <div className="logo-text" onClick={() => history.push("/")}>
+        <div className="logo-text" onClick={() => navigate("/")}>
           crAPI
         </div>
         {isLoggedIn ? menuNavigation() : <div />}
@@ -94,7 +108,7 @@ const Navbar = (props) => {
               src={profilePicData || defaultProficPic}
               className="avatar"
               size="large"
-              onClick={() => history.push("/my-profile")}
+              onClick={() => navigate("/my-profile")}
             />
           </div>
           <Dropdown overlay={menuSidebar()} placement="bottomRight">
@@ -109,14 +123,14 @@ const Navbar = (props) => {
             <Button
               className="navbar-button"
               onClick={() => {
-                history.push("/login");
+                navigate("/login");
               }}
             >
               Login
             </Button>
             <Button
               className="navbar-button"
-              onClick={() => history.push("/signup")}
+              onClick={() => navigate("/signup")}
             >
               Signup
             </Button>
@@ -127,28 +141,19 @@ const Navbar = (props) => {
   );
 };
 
-const mapStateToProps = ({
-  userReducer: { accessToken, name, isLoggedIn },
-  profileReducer: { profilePicData },
-}) => ({
-  accessToken,
-  name,
-  isLoggedIn,
-  profilePicData,
+const mapStateToProps = (state: RootState) => ({
+  accessToken: state.userReducer.accessToken,
+  name: state.userReducer.name,
+  isLoggedIn: state.userReducer.isLoggedIn,
+  profilePicData: state.profileReducer.profilePicData,
 });
 
 const mapDispatchToProps = {
   logOutUser: logOutUserAction,
 };
 
-Navbar.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  accessToken: PropTypes.string,
-  name: PropTypes.string,
-  profilePicData: PropTypes.string,
-  logOutUser: PropTypes.func,
-  history: PropTypes.object,
-  location: PropTypes.object,
-};
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(Navbar);

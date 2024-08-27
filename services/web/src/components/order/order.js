@@ -17,30 +17,17 @@ import "./styles.css";
 
 import React from "react";
 import PropTypes from "prop-types";
-import { RollbackOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
-import {
-  Layout,
-  Descriptions,
-  PageHeader,
-  Avatar,
-  Row,
-  Col,
-  Card,
-  Button,
-  Typography,
-  Divider,
-  Modal,
-  Table,
-} from "antd";
+import { Layout, Descriptions, Avatar, Row, Col, Card, Divider } from "antd";
 import { formatDateFromIso } from "../../utils";
+import { PageHeader } from "@ant-design/pro-components";
+import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
-const { Meta } = Card;
 
 const Order = (props) => {
-  const { order, history } = props;
-
+  const { order } = props;
+  const navigate = useNavigate();
   const renderAvatar = (url) => (
     <Avatar shape="square" className="order-avatar" size={200} src={url} />
   );
@@ -50,7 +37,7 @@ const Order = (props) => {
       <PageHeader
         title="Order Details"
         className="page-header"
-        onBack={() => history.push("/past-orders")}
+        onBack={() => navigate("/past-orders")}
       />
       <Content>
         <Row span="24">
@@ -93,7 +80,6 @@ const Order = (props) => {
 };
 
 Order.propTypes = {
-  history: PropTypes.object,
   order: PropTypes.object,
   returnOrder: PropTypes.func,
 };

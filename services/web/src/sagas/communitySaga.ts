@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -25,64 +25,66 @@ import {
   COMMENT_ADDED,
   COMMENT_NOT_ADDED,
 } from "../constants/messages";
+import MyAction from "../types/action";
+
+interface ReceivedResponse extends Response {
+  ok: boolean;
+}
 
 /**
  * get the list of posts
- * @param { accessToken, callback} param
+ * @payload { accessToken, callback} payload
  * accessToken: access token of the user
  * callback : callback method
+ * offset : offset for the posts
  */
-export function* getPosts(param) {
-  const { accessToken, callback } = param;
-  let recievedResponse = {};
+export function* getPosts(action: MyAction): Generator<any, void, any> {
+  console.log("getPosts", action);
+  const { accessToken, callback, offset = 0 } = action.payload;
+  let receivedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
-    let offset = 0;
-    if (param.offset) {
-      offset = param.offset;
-    }
     const getUrl =
       APIService.COMMUNITY_SERVICE +
       requestURLS.GET_POSTS +
-      "?limit=30&offset=" +
-      offset;
+      `?limit=30&offset=${offset}`;
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     };
-    const ResponseJson = yield fetch(getUrl, {
+    const responseJson = yield fetch(getUrl, {
       headers,
       method: "GET",
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      receivedResponse = response as ReceivedResponse;
       return response.json();
     });
 
-    yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
-    if (recievedResponse.ok) {
+    yield put({ type: actionTypes.FETCHED_DATA, payload: receivedResponse });
+    if (receivedResponse.ok) {
       yield put({
         type: actionTypes.FETCHED_POSTS,
-        payload: ResponseJson,
+        payload: responseJson,
       });
-      callback(responseTypes.SUCCESS, ResponseJson);
+      callback(responseTypes.SUCCESS, responseJson);
     } else {
-      callback(responseTypes.FAILURE, ResponseJson.message);
+      callback(responseTypes.FAILURE, responseJson.message);
     }
   } catch (e) {
-    yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
+    yield put({ type: actionTypes.FETCHED_DATA, payload: receivedResponse });
     callback(responseTypes.FAILURE, NO_POSTS);
   }
 }
 
 /**
  * get the post
- * @param { accessToken, callback, postId } param
+ * @payload { accessToken, callback, postId } payload
  * accessToken: access token of the user
  * callback : callback method
  */
-export function* getPostById(param) {
-  const { accessToken, callback, postId } = param;
-  let recievedResponse = {};
+export function* getPostById(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback, postId } = action.payload;
+  let receivedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
 
@@ -91,40 +93,40 @@ export function* getPostById(param) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     };
-    const ResponseJson = yield fetch(getUrl.replace("<postId>", postId), {
+    const responseJson = yield fetch(getUrl.replace("<postId>", postId), {
       headers,
       method: "GET",
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      receivedResponse = response as ReceivedResponse;
       return response.json();
     });
 
-    yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
-    if (recievedResponse.ok) {
+    yield put({ type: actionTypes.FETCHED_DATA, payload: receivedResponse });
+    if (receivedResponse.ok) {
       yield put({
         type: actionTypes.FETCHED_POST,
-        payload: { postId, post: ResponseJson },
+        payload: { postId, post: responseJson },
       });
-      callback(responseTypes.SUCCESS, ResponseJson);
+      callback(responseTypes.SUCCESS, responseJson);
     } else {
-      callback(responseTypes.FAILURE, ResponseJson.message);
+      callback(responseTypes.FAILURE, responseJson.message);
     }
   } catch (e) {
-    yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
+    yield put({ type: actionTypes.FETCHED_DATA, payload: receivedResponse });
     callback(responseTypes.FAILURE, NO_POST);
   }
 }
 
 /**
  * add new post
- * @param { accessToken, callback, post } param
+ * @payload { accessToken, callback, post } payload
  * accessToken: access token of the user
  * callback : callback method
  * post: post object to be added
  */
-export function* addPost(param) {
-  let recievedResponse = {};
-  const { accessToken, callback, post } = param;
+export function* addPost(action: MyAction): Generator<any, void, any> {
+  let receivedResponse: ReceivedResponse = {} as ReceivedResponse;
+  const { accessToken, callback, post } = action.payload;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
 
@@ -137,33 +139,33 @@ export function* addPost(param) {
       headers,
       method: "POST",
       body: JSON.stringify(post),
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      receivedResponse = response as ReceivedResponse;
       return response.json();
     });
 
-    yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
-    if (recievedResponse.ok) {
+    yield put({ type: actionTypes.FETCHED_DATA, payload: receivedResponse });
+    if (receivedResponse.ok) {
       callback(responseTypes.SUCCESS, POST_CREATED);
     } else {
       callback(responseTypes.FAILURE, POST_NOT_CREATED);
     }
   } catch (e) {
-    yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
+    yield put({ type: actionTypes.FETCHED_DATA, payload: receivedResponse });
     callback(responseTypes.FAILURE, POST_NOT_CREATED);
   }
 }
 
 /**
  * add new comment for the post
- * @param { accessToken, callback, postId, comment } param
+ * @payload { accessToken, callback, postId, comment } payload
  * accessToken: access token of the user
  * callback : callback method
  * post: post object to be added
  */
-export function* addComment(param) {
-  const { accessToken, callback, postId, comment } = param;
-  let recievedResponse = {};
+export function* addComment(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback, postId, comment } = action.payload;
+  let receivedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
 
@@ -176,13 +178,13 @@ export function* addComment(param) {
       headers,
       method: "POST",
       body: JSON.stringify({ content: comment }),
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      receivedResponse = response as ReceivedResponse;
       return response.json();
     });
 
-    yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
-    if (recievedResponse.ok) {
+    yield put({ type: actionTypes.FETCHED_DATA, payload: receivedResponse });
+    if (receivedResponse.ok) {
       yield put({
         type: actionTypes.FETCHED_POST,
         payload: { postId, post: JsonResponse },
@@ -192,12 +194,12 @@ export function* addComment(param) {
       callback(responseTypes.FAILURE, COMMENT_NOT_ADDED);
     }
   } catch (e) {
-    yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
+    yield put({ type: actionTypes.FETCHED_DATA, payload: receivedResponse });
     callback(responseTypes.FAILURE, COMMENT_NOT_ADDED);
   }
 }
 
-export function* communityActionWatcher() {
+export function* communityActionWatcher(): Generator<any, void, any> {
   yield takeLatest(actionTypes.GET_POSTS, getPosts);
   yield takeLatest(actionTypes.GET_POST_BY_ID, getPostById);
   yield takeLatest(actionTypes.ADD_POST, addPost);

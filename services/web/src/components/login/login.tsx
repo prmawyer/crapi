@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -17,18 +17,33 @@ import "./login.css";
 
 import { Button, Form, Input, Card } from "antd";
 import React from "react";
-import PropTypes from "prop-types";
 
 import { UserOutlined } from "@ant-design/icons";
 import { EMAIL_VALIDATION } from "../../constants/constants";
 import { EMAIL_REQUIRED } from "../../constants/messages";
+import { useNavigate } from "react-router-dom";
 
 /**
- * login component for users
+ * Login component for users
  */
-const Login = (props) => {
-  const { hasErrored, errorMessage, onFinish, history } = props;
+interface LoginProps {
+  hasErrored?: boolean;
+  errorMessage?: string;
+  onFinish: (values: any) => void;
+}
 
+const Login: React.FC<LoginProps> = ({
+  hasErrored = false,
+  errorMessage = "",
+  onFinish,
+}) => {
+  const navigate = useNavigate();
+  const handleForgotPasswordClick = () => {
+    navigate("/forgot-password");
+  };
+  const handleSignUpClick = () => {
+    navigate("/signup");
+  };
   return (
     <div className="container">
       <Card title="Login" bordered={false} className="form-card">
@@ -65,7 +80,7 @@ const Login = (props) => {
           <Form.Item>
             <button
               className="alternative-style"
-              onClick={() => history.push("/forgot-password")}
+              onClick={handleForgotPasswordClick}
               type="button"
             >
               Forgot Password?
@@ -76,28 +91,16 @@ const Login = (props) => {
             </Button>
             <button
               className="alternative-style"
-              onClick={() => history.push("/signup")}
+              onClick={handleSignUpClick}
               type="button"
             >
-              Dont have an Account? SignUp
+              Don't have an Account? SignUp
             </button>
           </Form.Item>
         </Form>
       </Card>
     </div>
   );
-};
-
-Login.propTypes = {
-  history: PropTypes.object,
-  hasErrored: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  onFinish: PropTypes.func,
-};
-
-Login.defaultProps = {
-  hasErrored: false,
-  errorMessage: "",
 };
 
 export default Login;

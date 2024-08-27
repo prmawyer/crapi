@@ -18,27 +18,21 @@ import actionTypes from "../constants/actionTypes";
 export const getPostsAction = ({ accessToken, callback, ...data }) => {
   return {
     type: actionTypes.GET_POSTS,
-    accessToken,
-    callback,
-    ...data,
+    payload: { accessToken, ...data, callback },
   };
 };
 
 export const addPostAction = ({ accessToken, callback, ...data }) => {
   return {
     type: actionTypes.ADD_POST,
-    accessToken,
-    callback,
-    ...data,
+    payload: { accessToken, ...data, callback },
   };
 };
 
 export const getPostByIdAction = ({ accessToken, callback, postId }) => {
   return {
     type: actionTypes.GET_POST_BY_ID,
-    accessToken,
-    callback,
-    postId,
+    payload: { accessToken, postId, callback },
   };
 };
 
@@ -50,9 +44,6 @@ export const addCommentAction = ({
 }) => {
   return {
     type: actionTypes.ADD_COMMENT,
-    accessToken,
-    callback,
-    postId,
-    comment,
+    payload: { accessToken, postId, comment, callback },
   };
 };

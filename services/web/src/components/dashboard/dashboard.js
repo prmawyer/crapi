@@ -19,7 +19,6 @@ import { connect } from "react-redux";
 import React from "react";
 import PropTypes from "prop-types";
 import {
-  PageHeader,
   Card,
   Row,
   Col,
@@ -29,6 +28,8 @@ import {
   Layout,
   Alert,
 } from "antd";
+
+import { PageHeader } from "@ant-design/pro-components";
 import { ToolOutlined, SyncOutlined, PlusOutlined } from "@ant-design/icons";
 import { getMapUrl } from "../../utils";
 import {
@@ -36,32 +37,35 @@ import {
   NO_VEHICLE_DESC_2,
   NO_VEHICLE_DESC_3,
 } from "../../constants/messages";
+import { useNavigate } from "react-router-dom";
 
 const { Meta } = Card;
 const { Content } = Layout;
 
-const vehicleCardHeader = (vehicle, history) => (
-  <PageHeader
-    className="dashboard-header"
-    title={`VIN: ${vehicle.vin}`}
-    extra={[
-      <Button
-        type="primary"
-        shape="round"
-        icon={<ToolOutlined />}
-        size="large"
-        onClick={() => history.push(`/contact-mechanic?VIN=${vehicle.vin}`)}
-        key="add-vehicle"
-      >
-        Contact Mechanic
-      </Button>,
-    ]}
-  />
-);
+const vehicleCardHeader = (vehicle, handleVehicleClick) => {
+  return (
+    <PageHeader
+      className="dashboard-header"
+      title={`VIN: ${vehicle.vin}`}
+      extra={[
+        <Button
+          type="primary"
+          shape="round"
+          icon={<ToolOutlined />}
+          size="large"
+          onClick={handleVehicleClick}
+          key="add-vehicle"
+        >
+          Contact Mechanic
+        </Button>,
+      ]}
+    />
+  );
+};
 
 const Dashboard = (props) => {
-  const { vehicles, history, refreshLocation, resendMail } = props;
-
+  const { vehicles, refreshLocation, resendMail } = props;
+  const navigate = useNavigate();
   const vehicleCardContent = (vehicle) => (
     <>
       <Row gutter={[20, 20]}>
@@ -128,6 +132,12 @@ const Dashboard = (props) => {
       <span className="alert-msg">{NO_VEHICLE_DESC_3}</span>
     </>
   );
+  const handleVerifyVehicleClick = () => {
+    navigate("/verify-vehicle");
+  };
+  const handleVehicleClick = () => {
+    navigate("/mechanic");
+  };
 
   return (
     <Layout className="page-container">
@@ -141,7 +151,7 @@ const Dashboard = (props) => {
               shape="round"
               icon={<PlusOutlined />}
               size="large"
-              onClick={() => history.push("/verify-vehicle")}
+              onClick={handleVerifyVehicleClick}
               key="verify-vehicle"
             >
               Add a Vehicle
@@ -155,7 +165,7 @@ const Dashboard = (props) => {
             <Col span={24} key={vehicle.vin}>
               <Card className="vehicle-card">
                 <Meta
-                  title={vehicleCardHeader(vehicle, history)}
+                  title={vehicleCardHeader(vehicle, handleVehicleClick)}
                   description={vehicleCardContent(vehicle)}
                 />
               </Card>
@@ -183,7 +193,6 @@ const mapStateToProps = ({ vehicleReducer: { vehicles } }) => {
 };
 
 Dashboard.propTypes = {
-  history: PropTypes.object,
   vehicles: PropTypes.array,
   resendMail: PropTypes.func,
   refreshLocation: PropTypes.func,

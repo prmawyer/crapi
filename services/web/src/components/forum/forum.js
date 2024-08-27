@@ -18,7 +18,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
-  PageHeader,
   Row,
   Col,
   Layout,
@@ -28,15 +27,17 @@ import {
   Avatar,
   Typography,
 } from "antd";
+import { PageHeader } from "@ant-design/pro-components";
 import { PlusOutlined } from "@ant-design/icons";
 import { formatDateFromIso } from "../../utils";
 import defaultProficPic from "../../assets/default_profile_pic.png";
-
+import { useNavigate } from "react-router-dom";
 const { Content } = Layout;
 const { Meta } = Card;
 const { Paragraph } = Typography;
 
 const Forum = (props) => {
+  const navigate = useNavigate();
   const { posts, prevOffset, nextOffset } = props;
 
   const renderAvatar = (url) => (
@@ -44,6 +45,12 @@ const Forum = (props) => {
   );
   console.log("Prev offset", prevOffset);
   console.log("Next offset", nextOffset);
+  const handleNewPostClick = () => {
+    navigate("/new-post");
+  };
+  const handlePostClick = (postId) => {
+    navigate(`/post?post_id=${postId}`);
+  };
   return (
     <Layout className="page-container">
       <PageHeader
@@ -56,7 +63,7 @@ const Forum = (props) => {
             icon={<PlusOutlined />}
             size="large"
             key="add-coupons"
-            onClick={() => props.history.push("/new-post")}
+            onClick={handleNewPostClick}
           >
             New Post
           </Button>,
@@ -66,10 +73,7 @@ const Forum = (props) => {
         <Row gutter={[40, 40]}>
           {posts.map((post) => (
             <Col key={post.id}>
-              <Card
-                hoverable
-                onClick={() => props.history.push(`/post?post_id=${post.id}`)}
-              >
+              <Card hoverable onClick={() => handlePostClick(post.id)}>
                 <Meta
                   avatar={renderAvatar(post.author.profile_pic_url)}
                   title={post.title}
@@ -117,7 +121,6 @@ const Forum = (props) => {
 };
 
 Forum.propTypes = {
-  history: PropTypes.object,
   posts: PropTypes.array,
   prevOffset: PropTypes.number,
   nextOffset: PropTypes.number,

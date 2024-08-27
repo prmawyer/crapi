@@ -18,7 +18,7 @@ import "./unlock.css";
 import { Button, Form, Input, Card } from "antd";
 import React from "react";
 import PropTypes from "prop-types";
-
+import { useNavigate } from "react-router-dom";
 import { UserOutlined } from "@ant-design/icons";
 import { EMAIL_VALIDATION } from "../../constants/constants";
 import { EMAIL_REQUIRED } from "../../constants/messages";
@@ -27,7 +27,8 @@ import { EMAIL_REQUIRED } from "../../constants/messages";
  * unlock component for users
  */
 const Unlock = (props) => {
-  const { email, message, hasErrored, errorMessage, onFinish, history } = props;
+  const { email, message, hasErrored, errorMessage, onFinish } = props;
+  const navigate = useNavigate();
 
   return (
     <div className="container">
@@ -76,7 +77,7 @@ const Unlock = (props) => {
           <Form.Item>
             <button
               className="alternative-style"
-              onClick={() => history.push("/login")}
+              onClick={() => navigate("/login")}
               type="button"
             >
               {" "}
@@ -86,7 +87,7 @@ const Unlock = (props) => {
           <Form.Item>
             <button
               className="alternative-style"
-              onClick={() => history.push("/signup")}
+              onClick={() => navigate("/signup")}
               type="button"
             >
               {" "}
@@ -102,7 +103,6 @@ const Unlock = (props) => {
 Unlock.propTypes = {
   email: PropTypes.string,
   message: PropTypes.string,
-  history: PropTypes.object,
   hasErrored: PropTypes.bool,
   errorMessage: PropTypes.string,
   onFinish: PropTypes.func,

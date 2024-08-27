@@ -20,7 +20,6 @@ import React, { useRef } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import {
-  PageHeader,
   Row,
   Col,
   Layout,
@@ -35,16 +34,18 @@ import {
   Form,
   Input,
 } from "antd";
+import { PageHeader } from "@ant-design/pro-components";
 import { EditOutlined, MoreOutlined, CameraOutlined } from "@ant-design/icons";
 import defaultProficPic from "../../assets/default_profile_pic.png";
 import { VIDEO_NAME_REQUIRED } from "../../constants/messages";
+import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
 const { Meta } = Card;
 
 const Profile = (props) => {
+  const navigate = useNavigate();
   const {
-    history,
     hasErrored,
     errorMessage,
 
@@ -125,7 +126,7 @@ const Profile = (props) => {
               shape="round"
               className="change-email-btn"
               icon={<EditOutlined />}
-              onClick={() => history.push("/change-email")}
+              onClick={() => navigate("/change-email")}
             >
               Change email
             </Button>
@@ -219,8 +220,6 @@ const mapStateToProps = ({ userReducer, profileReducer }) => {
 };
 
 Profile.propTypes = {
-  history: PropTypes.object,
-
   hasErrored: PropTypes.bool,
   errorMessage: PropTypes.string,
 

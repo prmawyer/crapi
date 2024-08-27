@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -16,6 +16,7 @@
 import { put, takeLatest } from "redux-saga/effects";
 import { APIService, requestURLS } from "../constants/APIConstant";
 import actionTypes from "../constants/actionTypes";
+import MyAction from "../types/action";
 import responseTypes from "../constants/responseTypes";
 import {
   EMAIL_NOT_SENT,
@@ -27,15 +28,19 @@ import {
   LOC_NOT_REFRESHED,
 } from "../constants/messages";
 
+interface ReceivedResponse extends Response {
+  ok: boolean;
+}
+
 /**
  * resend vehicle details
- * @param { accessToken, callback } param
+ * @payload { accessToken, callback } payload
  * accessToken: access token of the user
  * callback : callback method
  */
-export function* resendMail(param) {
-  const { accessToken, callback } = param;
-  let recievedResponse = {};
+export function* resendMail(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback } = action.payload;
+  let recievedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
 
@@ -44,19 +49,19 @@ export function* resendMail(param) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     };
-    const ResponseJson = yield fetch(postUrl, {
+    const responseJson = yield fetch(postUrl, {
       headers,
       method: "POST",
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      recievedResponse = response as ReceivedResponse;
       return response.json();
     });
 
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
     if (recievedResponse.ok) {
-      callback(responseTypes.SUCCESS, ResponseJson.message);
+      callback(responseTypes.SUCCESS, responseJson.message);
     } else {
-      callback(responseTypes.FAILURE, ResponseJson.message);
+      callback(responseTypes.FAILURE, responseJson.message);
     }
   } catch (e) {
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
@@ -66,15 +71,15 @@ export function* resendMail(param) {
 
 /**
  * verify vehicle details entered by user and add this vehicle to this uder
- * @param { pincode, vehicleNumber, accessToken, callback} param
+ * @payload { pincode, vehicleNumber, accessToken, callback} payload
  * pincode: pincode of the vehicle entered
  * vehicleNumber: vehicle number entered by the user
  * accessToken: access token of the user
  * callback : callback method
  */
-export function* verifyVehicle(param) {
-  const { accessToken, callback, pinCode, vin } = param;
-  let recievedResponse = {};
+export function* verifyVehicle(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback, pinCode, vin } = action.payload;
+  let recievedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
     const postUrl = APIService.IDENTITY_SERVICE + requestURLS.ADD_VEHICLE;
@@ -82,20 +87,20 @@ export function* verifyVehicle(param) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     };
-    const ResponseJson = yield fetch(postUrl, {
+    const responseJson = yield fetch(postUrl, {
       headers,
       method: "POST",
       body: JSON.stringify({ vin, pincode: pinCode }),
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      recievedResponse = response as ReceivedResponse;
       return response.json();
     });
 
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
     if (recievedResponse.ok) {
-      callback(responseTypes.SUCCESS, ResponseJson.message);
+      callback(responseTypes.SUCCESS, responseJson.message);
     } else {
-      callback(responseTypes.FAILURE, ResponseJson.message);
+      callback(responseTypes.FAILURE, responseJson.message);
     }
   } catch (e) {
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
@@ -105,14 +110,14 @@ export function* verifyVehicle(param) {
 
 /**
  * get the list of vehicles of the current user
- * @param { accessToken, callback} param
+ * @payload { accessToken, callback} payload
  * accessToken: access token of the user
  * callback : callback method
  */
-export function* getVehicles(param) {
-  const { accessToken, callback } = param;
+export function* getVehicles(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback } = action.payload;
   console.log(callback);
-  let recievedResponse = {};
+  let recievedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
     let getUrl = APIService.IDENTITY_SERVICE + requestURLS.GET_USER;
@@ -123,8 +128,8 @@ export function* getVehicles(param) {
     const userResponseJSON = yield fetch(getUrl, {
       headers,
       method: "GET",
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      recievedResponse = response as ReceivedResponse;
       return response.json();
     });
     if (!recievedResponse.ok) {
@@ -136,11 +141,11 @@ export function* getVehicles(param) {
     });
 
     getUrl = APIService.IDENTITY_SERVICE + requestURLS.GET_VEHICLES;
-    const ResponseJson = yield fetch(getUrl, {
+    const responseJson = yield fetch(getUrl, {
       headers,
       method: "GET",
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      recievedResponse = response as ReceivedResponse;
       return response.json();
     });
 
@@ -148,11 +153,11 @@ export function* getVehicles(param) {
     if (recievedResponse.ok) {
       yield put({
         type: actionTypes.FETCHED_VEHICLES,
-        payload: ResponseJson,
+        payload: responseJson,
       });
-      callback(responseTypes.SUCCESS, ResponseJson);
+      callback(responseTypes.SUCCESS, responseJson);
     } else {
-      callback(responseTypes.FAILURE, ResponseJson.error);
+      callback(responseTypes.FAILURE, responseJson.error);
     }
   } catch (e) {
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
@@ -162,13 +167,13 @@ export function* getVehicles(param) {
 
 /**
  * get the list of mechanics
- * @param { accessToken, callback} param
+ * @payload { accessToken, callback} payload
  * accessToken: access token of the user
  * callback : callback method
  */
-export function* getMechanics(param) {
-  const { accessToken, callback } = param;
-  let recievedResponse = {};
+export function* getMechanics(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback } = action.payload;
+  let recievedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
     const getUrl = APIService.WORKSHOP_SERVICE + requestURLS.GET_MECHANICS;
@@ -176,23 +181,23 @@ export function* getMechanics(param) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     };
-    const ResponseJson = yield fetch(getUrl, {
+    const responseJson = yield fetch(getUrl, {
       headers,
       method: "GET",
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      recievedResponse = response as ReceivedResponse;
       return response.json();
     });
 
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
     yield put({
       type: actionTypes.FETCHED_MECHANICS,
-      payload: ResponseJson.mechanics,
+      payload: responseJson.mechanics,
     });
     if (recievedResponse.ok) {
-      callback(responseTypes.SUCCESS, ResponseJson.mechanics);
+      callback(responseTypes.SUCCESS, responseJson.mechanics);
     } else {
-      callback(responseTypes.FAILURE, ResponseJson.message);
+      callback(responseTypes.FAILURE, responseJson.message);
     }
   } catch (e) {
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
@@ -202,16 +207,17 @@ export function* getMechanics(param) {
 
 /**
  * contact Mechanic API
- * @param { accessToken, callback, VIN, mechanic, problem_details } param
+ * @payload { accessToken, callback, VIN, mechanic, problem_details } payload
  * accessToken: access token of the user
  * callback : callback method
  * VIN: vehicle identification number
  * mechanic: mechanic_code to whom service is to be given
  * problem_details: Problem about the car
  */
-export function* contactMechanic(param) {
-  const { accessToken, callback, mechanicCode, problemDetails, vin } = param;
-  let recievedResponse = {};
+export function* contactMechanic(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback, mechanicCode, problemDetails, vin } =
+    action.payload;
+  let recievedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
     const postUrl = APIService.WORKSHOP_SERVICE + requestURLS.CONTACT_MECHANIC;
@@ -219,8 +225,8 @@ export function* contactMechanic(param) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     };
-    var http_host = new URL(window.location.href).origin;
-    const ResponseJson = yield fetch(postUrl, {
+    const http_host = new URL(window.location.href).origin;
+    const responseJson = yield fetch(postUrl, {
       headers,
       method: "POST",
       body: JSON.stringify({
@@ -235,8 +241,8 @@ export function* contactMechanic(param) {
         repeat_request_if_failed: false,
         number_of_repeats: 1,
       }),
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      recievedResponse = response as ReceivedResponse;
       return response.json();
     });
 
@@ -244,7 +250,7 @@ export function* contactMechanic(param) {
     if (recievedResponse.ok) {
       callback(responseTypes.SUCCESS, SERVICE_REQUEST_SENT);
     } else {
-      callback(responseTypes.FAILURE, ResponseJson.message);
+      callback(responseTypes.FAILURE, responseJson.message);
     }
   } catch (e) {
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
@@ -254,14 +260,14 @@ export function* contactMechanic(param) {
 
 /**
  * change location of the vehicle
- * @param { accessToken, callback, vehicle_id } param
+ * @payload { accessToken, callback, vehicle_id } payload
  * accessToken: access token of the user
  * callback : callback method
  * vehicle_id: vehicle_id of the vehicle whose location is to be changed
  */
-export function* refreshLocation(param) {
-  const { accessToken, callback, carId } = param;
-  let recievedResponse = {};
+export function* refreshLocation(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback, carId } = action.payload;
+  let recievedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
     const getUrl = APIService.IDENTITY_SERVICE + requestURLS.REFRESH_LOCATION;
@@ -269,11 +275,11 @@ export function* refreshLocation(param) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     };
-    const ResponseJson = yield fetch(getUrl.replace("<carId>", carId), {
+    const responseJson = yield fetch(getUrl.replace("<carId>", carId), {
       headers,
       method: "GET",
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      recievedResponse = response as ReceivedResponse;
       return response.json();
     });
 
@@ -281,11 +287,11 @@ export function* refreshLocation(param) {
     if (recievedResponse.ok) {
       yield put({
         type: actionTypes.REFRESHED_LOCATION,
-        payload: { carId, location: ResponseJson.vehicleLocation },
+        payload: { carId, location: responseJson.vehicleLocation },
       });
-      callback(responseTypes.SUCCESS, ResponseJson.vehicleLocation);
+      callback(responseTypes.SUCCESS, responseJson.vehicleLocation);
     } else {
-      callback(responseTypes.FAILURE, ResponseJson.message);
+      callback(responseTypes.FAILURE, responseJson.message);
     }
   } catch (e) {
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
@@ -293,7 +299,7 @@ export function* refreshLocation(param) {
   }
 }
 
-export function* vehicleActionWatcher() {
+export function* vehicleActionWatcher(): Generator<any, void, any> {
   yield takeLatest(actionTypes.RESEND_MAIL, resendMail);
   yield takeLatest(actionTypes.VERIFY_VEHICLE, verifyVehicle);
   yield takeLatest(actionTypes.GET_VEHICLES, getVehicles);

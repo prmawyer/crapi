@@ -15,8 +15,8 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { PageHeader, Card, Row, Col } from "antd";
-
+import { Card, Row, Col } from "antd";
+import { PageHeader } from "@ant-design/pro-components";
 const { Meta } = Card;
 
 const MechanicDashboard = (props) => {
@@ -49,7 +49,6 @@ const MechanicDashboard = (props) => {
 };
 
 MechanicDashboard.propTypes = {
-  history: PropTypes.object,
   services: PropTypes.array,
 };
 

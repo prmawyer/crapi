@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -18,9 +18,7 @@ import actionTypes from "../constants/actionTypes";
 export const logInUserAction = ({ email, password, callback }) => {
   return {
     type: actionTypes.LOG_IN,
-    email,
-    password,
-    callback,
+    payload: { email, password, callback },
   };
 };
 
@@ -28,9 +26,7 @@ export const unlockUserAction = ({ email, code, callback }) => {
   console.log("unlockUserAction", email, code, callback);
   return {
     type: actionTypes.UNLOCK_USER,
-    email,
-    code,
-    callback,
+    payload: { email, code, callback },
   };
 };
 
@@ -38,9 +34,7 @@ export const unlockRedirectUserAction = ({ email, message, callback }) => {
   console.log("unlockRedirectUserAction", email, message, callback);
   return {
     type: actionTypes.UNLOCK_USER_REDIRECT,
-    email,
-    message,
-    callback,
+    payload: { email, message, callback },
   };
 };
 
@@ -53,11 +47,7 @@ export const signUpUserAction = ({
 }) => {
   return {
     type: actionTypes.SIGN_UP,
-    name,
-    email,
-    number,
-    password,
-    callback,
+    payload: { name, email, number, password, callback },
   };
 };
 
@@ -65,7 +55,14 @@ export const signUpUserAction = ({
 export const logOutUserAction = ({ callback }) => {
   return {
     type: actionTypes.LOG_OUT,
-    callback,
+    payload: { callback },
+  };
+};
+
+export const validateAccessTokenAction = () => {
+  console.log("validateAccessTokenAction action");
+  return {
+    type: actionTypes.VALIDATE_ACCESS_TOKEN,
   };
 };
 
@@ -75,62 +72,49 @@ export const invalidSessionAction = () => {
   };
 };
 
-export const forgotPasswordAction = ({ callback, email }) => {
+export const forgotPasswordAction = ({ email, callback }) => {
   return {
     type: actionTypes.FORGOT_PASSWORD,
-    email,
-    callback,
+    payload: { email, callback },
   };
 };
 
-export const verifyOTPAction = ({ callback, otp, email, password }) => {
+export const verifyOTPAction = ({ otp, email, password, callback }) => {
   return {
     type: actionTypes.VERIFY_OTP,
-    email,
-    otp,
-    callback,
-    password,
+    payload: { otp, email, password, callback },
   };
 };
 
 export const resetPasswordAction = ({
-  callback,
   email,
   accessToken,
   password,
+  callback,
 }) => {
   return {
     type: actionTypes.RESET_PASSWORD,
-    email,
-    accessToken,
-    password,
-    callback,
+    payload: { email, accessToken, password, callback },
   };
 };
 
-export const getServicesAction = ({ callback, accessToken, ...data }) => {
+export const getServicesAction = ({ accessToken, callback, ...data }) => {
   return {
     type: actionTypes.GET_SERVICES,
-    accessToken,
-    callback,
-    ...data,
+    payload: { accessToken, callback, ...data },
   };
 };
 
-export const changeEmailAction = ({ callback, accessToken, ...data }) => {
+export const changeEmailAction = ({ accessToken, callback, ...data }) => {
   return {
     type: actionTypes.CHANGE_EMAIL,
-    accessToken,
-    callback,
-    ...data,
+    payload: { accessToken, callback, ...data },
   };
 };
 
-export const verifyTokenAction = ({ callback, accessToken, ...data }) => {
+export const verifyTokenAction = ({ accessToken, callback, ...data }) => {
   return {
     type: actionTypes.VERIFY_TOKEN,
-    accessToken,
-    callback,
-    ...data,
+    payload: { accessToken, callback, ...data },
   };
 };

@@ -20,7 +20,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
   Layout,
-  PageHeader,
   Avatar,
   Row,
   Col,
@@ -32,6 +31,7 @@ import {
   Input,
   Modal,
 } from "antd";
+import { PageHeader } from "@ant-design/pro-components";
 import { CommentOutlined } from "@ant-design/icons";
 import { COMMENT_REQUIRED } from "../../constants/messages";
 import { formatDateFromIso } from "../../utils";

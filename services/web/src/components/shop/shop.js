@@ -18,7 +18,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
-  PageHeader,
   Row,
   Col,
   Layout,
@@ -30,12 +29,14 @@ import {
   Modal,
   Input,
 } from "antd";
+import { PageHeader } from "@ant-design/pro-components";
 import {
   PlusOutlined,
   OrderedListOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
 import { COUPON_CODE_REQUIRED } from "../../constants/messages";
+import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
 const { Meta } = Card;
@@ -67,11 +68,11 @@ const ProductDescription = (product, onBuyProduct) => (
 );
 
 const Shop = (props) => {
+  const navigate = useNavigate();
   const {
     accessToken,
     products,
     availableCredit,
-    history,
     isCouponFormOpen,
     setIsCouponFormOpen,
     hasErrored,
@@ -86,7 +87,7 @@ const Shop = (props) => {
       <PageHeader
         className="page-header"
         title="Shop"
-        onBack={() => history.push("/dashboard")}
+        onBack={() => navigate("/dashboard")}
         extra={[
           <Button
             type="primary"
@@ -103,7 +104,7 @@ const Shop = (props) => {
             shape="round"
             icon={<OrderedListOutlined />}
             size="large"
-            onClick={() => props.history.push("/past-orders")}
+            onClick={() => navigate("/past-orders")}
             key="past-orders"
           >
             Past Orders
@@ -183,7 +184,6 @@ const Shop = (props) => {
 
 Shop.propTypes = {
   accessToken: PropTypes.string,
-  history: PropTypes.object,
   products: PropTypes.array,
   availableCredit: PropTypes.number,
   onBuyProduct: PropTypes.func,

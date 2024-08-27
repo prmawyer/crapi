@@ -23,13 +23,13 @@ import {
   refreshLocationAction,
   resendMailAction,
 } from "../../actions/vehicleActions";
+import { validateAccessTokenAction } from "../../actions/userActions";
 import Dashboard from "../../components/dashboard/dashboard";
 import responseTypes from "../../constants/responseTypes";
 import { FAILURE_MESSAGE, SUCCESS_MESSAGE } from "../../constants/messages";
 
 const DashboardContainer = (props) => {
-  const { history, accessToken, getVehicles, resendMail, refreshLocation } =
-    props;
+  const { accessToken, getVehicles, resendMail, refreshLocation } = props;
 
   useEffect(() => {
     const callback = () => {};
@@ -66,7 +66,6 @@ const DashboardContainer = (props) => {
 
   return (
     <Dashboard
-      history={history}
       refreshLocation={handleRefreshLocation}
       resendMail={handleResendMail}
     />
@@ -88,7 +87,6 @@ DashboardContainer.propTypes = {
   getVehicles: PropTypes.func,
   resendMail: PropTypes.func,
   refreshLocation: PropTypes.func,
-  history: PropTypes.object,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardContainer);

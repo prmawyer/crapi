@@ -25,7 +25,6 @@ import TokenFormContainer from "../../containers/tokenForm/tokenForm";
 const { Step } = Steps;
 
 const ChangeEmail = (props) => {
-  const { history } = props;
   const steps = [
     {
       title: "New Email",
@@ -60,16 +59,11 @@ const ChangeEmail = (props) => {
             setCurrentStep={handleStepChange}
             email={email}
             onMailChange={handleEmailChange}
-            history={history}
           />
         </div>
       </Card>
     </div>
   );
-};
-
-ChangeEmail.propTypes = {
-  history: PropTypes.object,
 };
 
 export default ChangeEmail;

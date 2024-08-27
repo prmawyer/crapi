@@ -17,16 +17,18 @@ import "./styles.css";
 
 import React from "react";
 import PropTypes from "prop-types";
-import { PageHeader, Row, Col, Layout, Card, Button, Avatar } from "antd";
+import { Row, Col, Layout, Card, Button, Avatar } from "antd";
+import { PageHeader } from "@ant-design/pro-components";
 import { RollbackOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
 import { formatDateFromIso } from "../../utils";
-
+import { useNavigate } from "react-router-dom";
 const { Content } = Layout;
 const { Meta } = Card;
 
 const PastOrders = (props) => {
-  const { pastOrders, history } = props;
+  const navigate = useNavigate();
+  const { pastOrders } = props;
 
   const renderAvatar = (url) => (
     <Avatar shape="square" className="order-avatar" size={250} src={url} />
@@ -43,7 +45,7 @@ const PastOrders = (props) => {
             shape="round"
             size="large"
             key="order-details"
-            onClick={() => props.history.push(`/orders?order_id=${order.id}`)}
+            onClick={() => navigate(`/orders?order_id=${order.id}`)}
           >
             {" "}
             Order Details
@@ -70,7 +72,7 @@ const PastOrders = (props) => {
       <PageHeader
         title="Past Orders"
         className="page-header"
-        onBack={() => history.push("/shop")}
+        onBack={() => navigate("/shop")}
       />
       <Content>
         <Row gutter={[40, 40]}>
@@ -113,7 +115,6 @@ const PastOrders = (props) => {
 };
 
 PastOrders.propTypes = {
-  history: PropTypes.object,
   pastOrders: PropTypes.array,
   returnOrder: PropTypes.func,
   prevOffset: PropTypes.number,

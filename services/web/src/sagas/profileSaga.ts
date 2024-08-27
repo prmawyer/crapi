@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -26,33 +26,37 @@ import {
   VIDEO_NAME_NOT_CHANGED,
   VIDEO_NOT_CONVERTED,
 } from "../constants/messages";
+import MyAction from "../types/action";
+
+interface ReceivedResponse extends Response {
+  ok: boolean;
+}
 
 /**
  * Upload profile pic
- * @param { accessToken, callback, file } param
+ * @payload { accessToken, callback, file } payload
  * accessToken: access token of the user
  * callback : callback method
  * file: image file
  */
-export function* uploadProfilePic(param) {
-  const { accessToken, callback, file } = param;
-  let recievedResponse = {};
+export function* uploadProfilePic(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback, file } = action.payload;
+  let recievedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
     const postUrl =
       APIService.IDENTITY_SERVICE + requestURLS.UPLOAD_PROFILE_PIC;
     const headers = {
-      // "Content-Type": "multipart/form-data;",
       Authorization: `Bearer ${accessToken}`,
     };
     const formData = new FormData();
     formData.append("file", file);
-    const ResponseJson = yield fetch(postUrl, {
+    const responseJson = yield fetch(postUrl, {
       headers,
       method: "POST",
       body: formData,
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      recievedResponse = response as ReceivedResponse;
       return response.json();
     });
 
@@ -60,11 +64,11 @@ export function* uploadProfilePic(param) {
     if (recievedResponse.ok) {
       yield put({
         type: actionTypes.PROFILE_PIC_CHANGED,
-        payload: { profilePicData: ResponseJson.picture },
+        payload: { profilePicData: responseJson.picture },
       });
       callback(responseTypes.SUCCESS, PROFILE_PIC_UPDATED);
     } else {
-      callback(responseTypes.FAILURE, ResponseJson.message);
+      callback(responseTypes.FAILURE, responseJson.message);
     }
   } catch (e) {
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
@@ -74,29 +78,28 @@ export function* uploadProfilePic(param) {
 
 /**
  * Upload car video
- * @param { accessToken, callback, file } param
+ * @payload { accessToken, callback, file } payload
  * accessToken: access token of the user
  * callback : callback method
  * file: video file
  */
-export function* uploadVideo(param) {
-  const { accessToken, callback, file } = param;
-  let recievedResponse = {};
+export function* uploadVideo(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback, file } = action.payload;
+  let recievedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
     const postUrl = APIService.IDENTITY_SERVICE + requestURLS.UPLOAD_VIDEO;
     const headers = {
-      // "Content-Type": "multipart/form-data;",
       Authorization: `Bearer ${accessToken}`,
     };
     const formData = new FormData();
     formData.append("file", file);
-    const ResponseJson = yield fetch(postUrl, {
+    const responseJson = yield fetch(postUrl, {
       headers,
       method: "POST",
       body: formData,
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      recievedResponse = response as ReceivedResponse;
       return response.json();
     });
 
@@ -105,13 +108,13 @@ export function* uploadVideo(param) {
       yield put({
         type: actionTypes.VIDEO_CHANGED,
         payload: {
-          videoData: ResponseJson.profileVideo,
-          videoId: ResponseJson.id,
+          videoData: responseJson.profileVideo,
+          videoId: responseJson.id,
         },
       });
       callback(responseTypes.SUCCESS, VIDEO_UPDATED);
     } else {
-      callback(responseTypes.FAILURE, ResponseJson.message);
+      callback(responseTypes.FAILURE, responseJson.message);
     }
   } catch (e) {
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
@@ -121,14 +124,14 @@ export function* uploadVideo(param) {
 
 /**
  * change Video Name
- * @param { accessToken, callback, videoName } param
+ * @payload { accessToken, callback, videoName } payload
  * accessToken: access token of the user
  * callback : callback method
  * videoName : new video name
  */
-export function* changeVideoName(param) {
-  const { accessToken, callback, videoName, videoId } = param;
-  let recievedResponse = {};
+export function* changeVideoName(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback, videoName, videoId } = action.payload;
+  let recievedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
     const putUrl =
@@ -138,12 +141,12 @@ export function* changeVideoName(param) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     };
-    const ResponseJson = yield fetch(putUrl, {
+    const responseJson = yield fetch(putUrl, {
       headers,
       method: "PUT",
       body: JSON.stringify({ videoName }),
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      recievedResponse = response as ReceivedResponse;
       return response.json();
     });
 
@@ -151,11 +154,11 @@ export function* changeVideoName(param) {
     if (recievedResponse.ok) {
       yield put({
         type: actionTypes.VIDEO_NAME_CHANGED,
-        payload: { videoName: ResponseJson.video_name },
+        payload: { videoName: responseJson.video_name },
       });
       callback(responseTypes.SUCCESS, VIDEO_NAME_CHANGED);
     } else {
-      callback(responseTypes.FAILURE, ResponseJson.message);
+      callback(responseTypes.FAILURE, responseJson.message);
     }
   } catch (e) {
     yield put({ type: actionTypes.FETCHED_DATA, payload: recievedResponse });
@@ -165,13 +168,13 @@ export function* changeVideoName(param) {
 
 /**
  * convert video
- * @param { accessToken, callback } param
+ * @payload { accessToken, callback } payload
  * accessToken: access token of the user
  * callback : callback method
  */
-export function* convertVideo(param) {
-  const { accessToken, callback, videoId } = param;
-  let recievedResponse = {};
+export function* convertVideo(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback, videoId } = action.payload;
+  let recievedResponse: ReceivedResponse = {} as ReceivedResponse;
   try {
     yield put({ type: actionTypes.FETCHING_DATA });
     const getUrl = APIService.IDENTITY_SERVICE + requestURLS.CONVERT_VIDEO;
@@ -182,8 +185,8 @@ export function* convertVideo(param) {
     yield fetch(`${getUrl}?video_id=${videoId}`, {
       headers,
       method: "GET",
-    }).then((response) => {
-      recievedResponse = response;
+    }).then((response: Response) => {
+      recievedResponse = response as ReceivedResponse;
       return response.json();
     });
 
@@ -199,7 +202,7 @@ export function* convertVideo(param) {
   }
 }
 
-export function* profileActionWatcher() {
+export function* profileActionWatcher(): Generator<any, void, any> {
   yield takeLatest(actionTypes.UPLOAD_PROFILE_PIC, uploadProfilePic);
   yield takeLatest(actionTypes.UPLOAD_VIDEO, uploadVideo);
   yield takeLatest(actionTypes.CHANGE_VIDEO_NAME, changeVideoName);

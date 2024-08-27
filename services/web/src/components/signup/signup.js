@@ -15,7 +15,7 @@
 
 import { Button, Form, Input, Card } from "antd";
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
   EMAIL_REQUIRED,
@@ -34,7 +34,8 @@ import {
 } from "../../constants/constants";
 
 const Signup = (props) => {
-  const { history, hasErrored, errorMessage, onFinish } = props;
+  const navigate = useNavigate();
+  const { hasErrored, errorMessage, onFinish } = props;
 
   return (
     <div className="container">
@@ -119,7 +120,7 @@ const Signup = (props) => {
           <Form.Item>
             <button
               className="alternative-style"
-              onClick={() => history.push("/login")}
+              onClick={() => navigate("/login")}
               type="button"
             >
               Already have an Account? Login
@@ -137,7 +138,6 @@ const Signup = (props) => {
 
 Signup.propTypes = {
   onFinish: PropTypes.func,
-  history: PropTypes.object,
   hasErrored: PropTypes.bool,
   errorMessage: PropTypes.string,
 };

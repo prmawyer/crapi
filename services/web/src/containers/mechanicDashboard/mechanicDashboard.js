@@ -24,7 +24,7 @@ import responseTypes from "../../constants/responseTypes";
 import { FAILURE_MESSAGE } from "../../constants/messages";
 
 const MechanicDashboardContainer = (props) => {
-  const { history, accessToken, getServices } = props;
+  const { accessToken, getServices } = props;
 
   const [services, setServices] = useState([]);
 
@@ -42,7 +42,7 @@ const MechanicDashboardContainer = (props) => {
     getServices({ callback, accessToken });
   }, [accessToken, getServices]);
 
-  return <MechanicDashboard history={history} services={services} />;
+  return <MechanicDashboard services={services} />;
 };
 
 const mapStateToProps = ({ userReducer: { accessToken } }) => {
@@ -56,7 +56,6 @@ const mapDispatchToProps = {
 MechanicDashboardContainer.propTypes = {
   accessToken: PropTypes.string,
   getServices: PropTypes.func,
-  history: PropTypes.object,
 };
 
 export default connect(

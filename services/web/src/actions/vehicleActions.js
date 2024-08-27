@@ -18,18 +18,22 @@ import actionTypes from "../constants/actionTypes";
 export const verifyVehicleAction = ({ callback, accessToken, ...data }) => {
   return {
     type: actionTypes.VERIFY_VEHICLE,
-    accessToken,
-    callback,
-    ...data,
+    payload: {
+      accessToken,
+      callback,
+      ...data,
+    },
   };
 };
 
 export const getMechanicsAction = ({ callback, accessToken, ...data }) => {
   return {
     type: actionTypes.GET_MECHANICS,
-    accessToken,
-    callback,
-    ...data,
+    payload: {
+      accessToken,
+      callback,
+      ...data,
+    },
   };
 };
 
@@ -41,35 +45,42 @@ export const getVehiclesAction = ({
 }) => {
   return {
     type: actionTypes.GET_VEHICLES,
-    accessToken,
-    callback,
-    email,
-    ...data,
+    payload: {
+      accessToken,
+      callback,
+      ...data,
+    },
   };
 };
 
 export const resendMailAction = ({ callback, accessToken }) => {
   return {
     type: actionTypes.RESEND_MAIL,
-    accessToken,
-    callback,
+    payload: {
+      accessToken,
+      callback,
+    },
   };
 };
 
 export const contactMechanicAction = ({ callback, accessToken, ...data }) => {
   return {
     type: actionTypes.CONTACT_MECHANIC,
-    accessToken,
-    callback,
-    ...data,
+    payload: {
+      accessToken,
+      callback,
+      ...data,
+    },
   };
 };
 
 export const refreshLocationAction = ({ accessToken, callback, ...data }) => {
   return {
     type: actionTypes.REFRESH_LOCATION,
-    accessToken,
-    callback,
-    ...data,
+    payload: {
+      accessToken,
+      callback,
+      ...data,
+    },
   };
 };

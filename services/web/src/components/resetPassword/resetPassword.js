@@ -87,7 +87,6 @@ const ResetPassword = (props) => {
 };
 
 ResetPassword.propTypes = {
-  history: PropTypes.object,
   onFinish: PropTypes.func,
   hasErrored: PropTypes.bool,
   errorMessage: PropTypes.string,

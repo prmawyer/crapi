@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -15,38 +15,46 @@
 
 import actionTypes from "../constants/actionTypes";
 
-export const uploadProfilePicAction = ({ callback, accessToken, ...data }) => {
+export const uploadProfilePicAction = ({ accessToken, callback, ...data }) => {
   return {
     type: actionTypes.UPLOAD_PROFILE_PIC,
-    accessToken,
-    callback,
-    ...data,
+    payload: {
+      accessToken,
+      ...data,
+      callback,
+    },
   };
 };
 
 export const uploadVideoAction = ({ accessToken, callback, ...data }) => {
   return {
     type: actionTypes.UPLOAD_VIDEO,
-    accessToken,
-    callback,
-    ...data,
+    payload: {
+      accessToken,
+      ...data,
+      callback,
+    },
   };
 };
 
 export const changeVideoNameAction = ({ accessToken, callback, ...data }) => {
   return {
     type: actionTypes.CHANGE_VIDEO_NAME,
-    accessToken,
-    callback,
-    ...data,
+    payload: {
+      accessToken,
+      ...data,
+      callback,
+    },
   };
 };
 
-export const convertVideoAction = ({ accessToken, callback, videoId }) => {
+export const convertVideoAction = ({ accessToken, videoId, callback }) => {
   return {
     type: actionTypes.CONVERT_VIDEO,
-    accessToken,
-    callback,
-    videoId,
+    payload: {
+      accessToken,
+      videoId,
+      callback,
+    },
   };
 };
