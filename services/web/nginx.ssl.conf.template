@@ -182,8 +182,17 @@ server {
     sub_filter_once off;
   }
 
-  location / {
+  location ~* ^/(login|unlock|signup|forgot-password|dashboard|mechanic-dashboard|reset-password|my-profile|change-email|verify-vehicle|contact-mechanic|shop|past-orders|orders|forum|new-post|post)$ {
     try_files $uri /index.html =404;
+    add_header Last-Modified $date_gmt;
+    add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+    if_modified_since off;
+    expires off;
+    etag off;
+  }
+
+  location / {
+    try_files $uri $uri/ =404;
     add_header Last-Modified $date_gmt;
     add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
     if_modified_since off;
