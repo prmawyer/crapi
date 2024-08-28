@@ -36,8 +36,8 @@ public class ChangePhoneController {
   }
 
   /**
-   * @param changePhoneForm changeEmailForm contains old phone number and new phone number, with otp, this
-   *     function will verify number and otp
+   * @param changePhoneForm changeEmailForm contains old phone number and new phone number, with
+   *     otp, this function will verify number and otp
    * @param request getting jwt token for user from request header
    * @return verify if otp is valid then it will update the user phone number
    */
