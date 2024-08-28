@@ -26,8 +26,8 @@ RUN apk add --update --no-cache --virtual .build-deps \
         musl-dev \
         libffi-dev
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 RUN mkdir /app
 WORKDIR /app
 COPY ./ /app
@@ -42,4 +42,4 @@ COPY ./certs /app/certs
 COPY health.sh /app/health.sh
 ARG SERVER_PORT
 EXPOSE ${SERVER_PORT}
-CMD /app/runner.sh
+CMD ["/app/runner.sh"]
