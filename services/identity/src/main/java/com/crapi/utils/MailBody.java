@@ -75,7 +75,7 @@ public class MailBody {
 
   /**
    * @param changeEmailRequest
-   * @return Mail Body, for Chnage Email.
+   * @return Mail Body, for Change Email.
    */
   public static String changeMailBody(ChangeEmailForm changeEmailRequest) {
     String msgBody =
@@ -104,6 +104,10 @@ public class MailBody {
     return msgBody;
   }
 
+  /**
+   * @param changePhoneRequest
+   * @return Mail Body, for Change Phone number.
+   */
   public static String changeMailBody(ChangePhoneForm changePhoneRequest) {
     String msgBody =
         "<html><body>"

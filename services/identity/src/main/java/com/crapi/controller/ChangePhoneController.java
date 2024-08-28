@@ -34,4 +34,22 @@ public class ChangePhoneController {
     }
     return ResponseEntity.status(HttpStatus.OK).body(changePhoneResponse);
   }
+
+  /**
+   * @param changeEmailForm changeEmailForm contains old email and new email, with token, this
+   *     function will verify email and token
+   * @param request getting jwt token for user from request header
+   * @return verify token if it is valid then it will update the user email
+   */
+  @PostMapping("v2/user/verify-phone-otp")
+  public ResponseEntity<CRAPIResponse> verifyPhoneOTP(
+      @RequestBody ChangePhoneForm changePhoneForm, HttpServletRequest request) {
+    CRAPIResponse verifyPhoneOTPResponse = userService.verifyPhoneOTP(request, changePhoneForm);
+    if (verifyPhoneOTPResponse != null && verifyPhoneOTPResponse.getStatus() == 200) {
+      return ResponseEntity.status(HttpStatus.OK).body(verifyPhoneOTPResponse);
+    } else if (verifyPhoneOTPResponse != null && verifyPhoneOTPResponse.getStatus() == 404) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(verifyPhoneOTPResponse);
+    }
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(verifyPhoneOTPResponse);
+  }
 }

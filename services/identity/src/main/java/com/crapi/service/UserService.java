@@ -39,6 +39,8 @@ public interface UserService {
 
   CRAPIResponse verifyEmailToken(HttpServletRequest request, ChangeEmailForm changeEmailForm);
 
+  CRAPIResponse verifyPhoneOTP(HttpServletRequest request, ChangePhoneForm changePhoneForm);
+
   User getUserFromToken(HttpServletRequest request);
 
   User getUserFromTokenWithoutValidation(HttpServletRequest request);
