@@ -170,7 +170,7 @@ services:
       crapi-workshop:
         condition: service_healthy
     healthcheck:
-      test: curl 0.0.0.0:80/web/health
+      test: curl 0.0.0.0:80/health
       interval: 15s
       timeout: 15s
       retries: 15
