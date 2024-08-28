@@ -12,7 +12,7 @@
 # limitations under the License.
 
 
-FROM python:3.10-alpine as build
+FROM python:3.10-alpine AS build
 # Not using alpine based on suggestion
 # https://pythonspeed.com/articles/alpine-docker-python/
 
