@@ -35,6 +35,8 @@ public interface UserService {
 
   CRAPIResponse changeEmailRequest(HttpServletRequest request, ChangeEmailForm loginForm);
 
+  CRAPIResponse changePhoneRequest(HttpServletRequest request, ChangePhoneForm changePhoneForm);
+
   CRAPIResponse verifyEmailToken(HttpServletRequest request, ChangeEmailForm changeEmailForm);
 
   User getUserFromToken(HttpServletRequest request);
