@@ -16,7 +16,4 @@ public class ChangePhoneForm {
 
   @Size(min = 3, max = 4)
   private String otp;
-
-  @Size(min = 3, max = 40)
-  private String email;
 }

@@ -19,11 +19,26 @@ import static org.mockito.Mockito.when;
 import com.crapi.config.JwtAuthTokenFilter;
 import com.crapi.config.JwtProvider;
 import com.crapi.constant.UserMessage;
-import com.crapi.entity.*;
+import com.crapi.entity.ChangeEmailRequest;
+import com.crapi.entity.ChangePhoneRequest;
+import com.crapi.entity.ProfileVideo;
+import com.crapi.entity.User;
+import com.crapi.entity.UserDetails;
 import com.crapi.enums.ERole;
 import com.crapi.exception.EntityNotFoundException;
-import com.crapi.model.*;
-import com.crapi.repository.*;
+import com.crapi.model.CRAPIResponse;
+import com.crapi.model.ChangeEmailForm;
+import com.crapi.model.ChangePhoneForm;
+import com.crapi.model.DashboardResponse;
+import com.crapi.model.JwtResponse;
+import com.crapi.model.LoginForm;
+import com.crapi.model.LoginWithEmailToken;
+import com.crapi.model.SignUpForm;
+import com.crapi.repository.ChangeEmailRepository;
+import com.crapi.repository.ChangePhoneRepository;
+import com.crapi.repository.ProfileVideoRepository;
+import com.crapi.repository.UserDetailsRepository;
+import com.crapi.repository.UserRepository;
 import com.crapi.service.VehicleService;
 import com.crapi.utils.SMTPMailServer;
 import java.io.UnsupportedEncodingException;
@@ -704,7 +719,6 @@ public class UserServiceImplTest {
     changePhoneForm.setOtp("1234");
     changePhoneForm.setNew_number("12345679");
     changePhoneForm.setOld_number("12345678");
-    changePhoneForm.setEmail("demo@email.com");
     return changePhoneForm;
   }
 

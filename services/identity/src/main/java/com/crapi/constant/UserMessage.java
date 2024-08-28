@@ -38,9 +38,10 @@ public class UserMessage {
   public static final String CHANGE_PHONE_MESSAGE =
       "The otp has been sent to your email. If you have used example.com email, check your email using the MailHog web portal.";
   public static final String NUMBER_CHANGE_SUCCESSFUL = "Phone number change is successful";
-  public static final String NEW_NUMBER_DOES_NOT_BELONG = "Incorrect new number supplied";
+  public static final String NEW_NUMBER_DOES_NOT_BELONG =
+      "Fail, new number parameter doesn’t match with OTP";
   public static final String OLD_NUMBER_DOES_NOT_BELONG =
-      "Old number does not match with user's number";
+      "Fail, number  parameter doesn’t belong to the user";
   public static final String EMAIL_ALREADY_REGISTERED = "Email already registered! Email: ";
   public static final String GIVEN_URL_ALREADY_USED =
       "Given URL is already used! Please try to login..";
