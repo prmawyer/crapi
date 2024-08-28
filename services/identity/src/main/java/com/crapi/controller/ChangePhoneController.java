@@ -23,7 +23,7 @@ public class ChangePhoneController {
    * @return first check phone number is already registered or not if it is there then return phone
    *     number already registered then try with new phone number.
    */
-  @PostMapping("/v2/user/change-phone")
+  @PostMapping("/v2/user/change-phone-number")
   public ResponseEntity<CRAPIResponse> changesPhone(
       @Valid @RequestBody ChangePhoneForm changePhoneForm, HttpServletRequest request) {
     CRAPIResponse changePhoneResponse = userService.changePhoneRequest(request, changePhoneForm);
