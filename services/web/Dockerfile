@@ -21,7 +21,7 @@ RUN npm install --silent
 COPY ./src /app/src
 COPY ./public /app/public
 COPY ./src/config.ts.template /app/src/config.ts
-RUN NODE_OPTIONS=--max_old_space_size=768 npm run build
+RUN NODE_OPTIONS=--max-old-space-size=1536 npm run build
 RUN ls /app/build
 
 # Main Image
@@ -39,4 +39,4 @@ RUN echo "daemon off;" >> /usr/local/openresty/nginx/conf/nginx.conf
 EXPOSE 80
 EXPOSE 443
 
-CMD /etc/nginx/nginx-wrapper.sh
+CMD [ "/etc/nginx/nginx-wrapper.sh" ]

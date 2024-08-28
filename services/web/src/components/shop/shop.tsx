@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -15,8 +15,7 @@
 
 import "./styles.css";
 import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import {
   Row,
   Col,
@@ -41,16 +40,40 @@ import { useNavigate } from "react-router-dom";
 const { Content } = Layout;
 const { Meta } = Card;
 
-const ProductAvatar = (product) => (
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  image_url: string;
+}
+
+interface ShopProps extends PropsFromRedux {
+  products: Product[];
+  availableCredit: number;
+  isCouponFormOpen: boolean;
+  setIsCouponFormOpen: (isOpen: boolean) => void;
+  hasErrored: boolean;
+  errorMessage: string;
+  onFinish: (values: any) => void;
+  prevOffset: number | null;
+  nextOffset: number | null;
+  onOffsetChange: (offset: number | null) => void;
+  onBuyProduct: (product: Product) => void;
+}
+
+const ProductAvatar: React.FC<{ image_url: string }> = ({ image_url }) => (
   <Avatar
     shape="square"
     className="product-avatar"
     size={250}
-    src={product.image_url}
+    src={image_url}
   />
 );
 
-const ProductDescription = (product, onBuyProduct) => (
+const ProductDescription: React.FC<{
+  product: Product;
+  onBuyProduct: (product: Product) => void;
+}> = ({ product, onBuyProduct }) => (
   <>
     <PageHeader title={`${product.name}, $${product.price}`} />
     <Button
@@ -67,10 +90,9 @@ const ProductDescription = (product, onBuyProduct) => (
   </>
 );
 
-const Shop = (props) => {
+const Shop: React.FC<ShopProps> = (props) => {
   const navigate = useNavigate();
   const {
-    accessToken,
     products,
     availableCredit,
     isCouponFormOpen,
@@ -81,7 +103,9 @@ const Shop = (props) => {
     prevOffset,
     nextOffset,
     onOffsetChange,
+    onBuyProduct,
   } = props;
+
   return (
     <Layout>
       <PageHeader
@@ -120,9 +144,9 @@ const Shop = (props) => {
         <Row gutter={[40, 40]}>
           {products.map((product) => (
             <Col span={8} key={product.id}>
-              <Card className="product-card" cover={ProductAvatar(product)}>
+              <Card className="product-card" cover={<ProductAvatar image_url={product.image_url} />}>
                 <Meta
-                  description={ProductDescription(product, props.onBuyProduct)}
+                  description={<ProductDescription product={product} onBuyProduct={onBuyProduct} />}
                 />
               </Card>
             </Col>
@@ -182,31 +206,23 @@ const Shop = (props) => {
   );
 };
 
-Shop.propTypes = {
-  accessToken: PropTypes.string,
-  products: PropTypes.array,
-  availableCredit: PropTypes.number,
-  onBuyProduct: PropTypes.func,
-  isCouponFormOpen: PropTypes.bool,
-  setIsCouponFormOpen: PropTypes.func,
-  hasErrored: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  onFinish: PropTypes.func,
-  prevOffset: PropTypes.number,
-  nextOffset: PropTypes.number,
-  onOffsetChange: PropTypes.func,
-};
-
-const mapStateToProps = ({
+interface RootState {
   shopReducer: {
-    accessToken,
-    availableCredit,
-    products,
-    prevOffset,
-    nextOffset,
-  },
-}) => {
+    accessToken: string;
+    availableCredit: number;
+    products: Product[];
+    prevOffset: number | null;
+    nextOffset: number | null;
+  };
+}
+
+const mapStateToProps = (state: RootState) => {
+  const { accessToken, availableCredit, products, prevOffset, nextOffset } = state.shopReducer;
   return { accessToken, availableCredit, products, prevOffset, nextOffset };
 };
 
-export default connect(mapStateToProps)(Shop);
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(Shop);

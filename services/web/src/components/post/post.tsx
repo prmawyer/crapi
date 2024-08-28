@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -16,8 +16,7 @@
 import "./style.css";
 import React, { Fragment } from "react";
 import Linkify from "react-linkify";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import {
   Layout,
   Avatar,
@@ -40,16 +39,47 @@ import defaultProficPic from "../../assets/default_profile_pic.png";
 const { Content } = Layout;
 const { Paragraph } = Typography;
 
-const Post = (props) => {
-  const {
-    onFinish,
-    post,
-    isCommentFormOpen,
-    setIsCommentFormOpen,
-    hasErrored,
-    errorMessage,
-  } = props;
+interface Author {
+  nickname: string;
+  profile_pic_url: string;
+}
 
+interface Comment {
+  CreatedAt: string;
+  author: Author;
+  content: string;
+}
+
+interface Post {
+  title: string;
+  author: Author;
+  CreatedAt: string;
+  content: string;
+  comments: Comment[];
+}
+
+interface RootState {
+  communityReducer: {
+    post: Post;
+  };
+}
+
+interface PostProps extends PropsFromRedux {
+  onFinish: (values: any) => void;
+  isCommentFormOpen: boolean;
+  setIsCommentFormOpen: (isOpen: boolean) => void;
+  hasErrored: boolean;
+  errorMessage: string;
+}
+
+const Posts: React.FC<PostProps> = ({
+  onFinish,
+  post,
+  isCommentFormOpen,
+  setIsCommentFormOpen,
+  hasErrored,
+  errorMessage,
+}) => {
   return (
     <Layout className="page-container">
       <Card>
@@ -160,17 +190,12 @@ const Post = (props) => {
   );
 };
 
-Post.propTypes = {
-  post: PropTypes.object,
-  onFinish: PropTypes.func,
-  hasErrored: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  isCommentFormOpen: PropTypes.bool,
-  setIsCommentFormOpen: PropTypes.func,
-};
+const mapStateToProps = (state: RootState) => ({
+  post: state.communityReducer.post,
+});
 
-const mapStateToProps = ({ communityReducer: { post } }) => {
-  return { post };
-};
+const connector = connect(mapStateToProps);
 
-export default connect(mapStateToProps)(Post);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(Posts);

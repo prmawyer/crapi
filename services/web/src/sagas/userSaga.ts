@@ -48,7 +48,7 @@ interface Response {
 export function* validateAccessToken(
   action: MyAction,
 ): Generator<any, void, any> {
-  console.log("validateAccessToken invoked fn", action.payload);
+  console.log("validateAccessToken invoked fn", action);
   const { accessToken } = action.payload;
   let receivedResponse: Partial<Response> = {};
   try {
@@ -57,7 +57,6 @@ export function* validateAccessToken(
     const headers = {
       "Content-Type": "application/json",
     };
-    console.log("validateAccessToken postUrl", postUrl);
     const responseJSON = yield fetch(postUrl, {
       headers,
       method: "POST",
@@ -66,7 +65,6 @@ export function* validateAccessToken(
       receivedResponse = response;
       return response.json();
     });
-    console.log("validateAccessToken response", responseJSON);
 
     yield put({ type: actionTypes.FETCHED_DATA, payload: responseJSON });
     if (!receivedResponse.ok) {
@@ -234,10 +232,13 @@ export function* signUp(action: MyAction): Generator<any, void, any> {
     const headers = {
       "Content-Type": "application/json",
     };
+    // remove special chars from number
+    const cleanedNumber = number.replace(/[^0-9+]/g, "");
+    console.log("number", cleanedNumber);
     const responseJSON = yield fetch(postUrl, {
       headers,
       method: "POST",
-      body: JSON.stringify({ name, email, number, password }),
+      body: JSON.stringify({ name, email, cleanedNumber, password }),
     }).then((response: Response) => {
       receivedResponse = response;
       if (receivedResponse.ok) return response;

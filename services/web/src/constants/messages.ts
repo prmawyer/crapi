@@ -20,7 +20,7 @@ export const NAME_REQUIRED: string = "Please enter your full name!";
 export const EMAIL_REQUIRED: string = "Please enter a valid email!";
 export const PHONE_NO_REQUIRED: string = "Please enter phone number";
 export const INVALID_PHONE: string =
-  "Contact number should have only numbers and -";
+  "Contact number should only contain digits, (, ), + or spaces.";
 export const PASSWORD_REQUIRED: string = "Please enter your password";
 export const INVALID_PASSWORD: React.ReactElement = React.createElement(
   "span",

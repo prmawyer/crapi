@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -15,8 +15,7 @@
 
 import "./style.css";
 import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import {
   Row,
   Col,
@@ -32,25 +31,63 @@ import { PlusOutlined } from "@ant-design/icons";
 import { formatDateFromIso } from "../../utils";
 import defaultProficPic from "../../assets/default_profile_pic.png";
 import { useNavigate } from "react-router-dom";
+
 const { Content } = Layout;
 const { Meta } = Card;
 const { Paragraph } = Typography;
 
-const Forum = (props) => {
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+  CreatedAt: string;
+  author: {
+    nickname: string;
+    profile_pic_url: string | null;
+  };
+}
+
+interface RootState {
+  communityReducer: {
+    posts: Post[];
+    prevOffset: number | null;
+    nextOffset: number | null;
+  };
+}
+
+const mapStateToProps = (state: RootState) => ({
+  posts: state.communityReducer.posts,
+  prevOffset: state.communityReducer.prevOffset,
+  nextOffset: state.communityReducer.nextOffset,
+});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+interface ForumProps extends PropsFromRedux {
+  handleOffsetChange: (offset: number | null) => void;
+}
+
+const Forum: React.FC<ForumProps> = (props) => {
   const navigate = useNavigate();
   const { posts, prevOffset, nextOffset } = props;
 
-  const renderAvatar = (url) => (
+  const renderAvatar = (url: string | null) => (
     <Avatar src={url || defaultProficPic} size="large" />
   );
+
   console.log("Prev offset", prevOffset);
   console.log("Next offset", nextOffset);
+
   const handleNewPostClick = () => {
     navigate("/new-post");
   };
-  const handlePostClick = (postId) => {
+
+  const handlePostClick = (postId: string) => {
     navigate(`/post?post_id=${postId}`);
   };
+
   return (
     <Layout className="page-container">
       <PageHeader
@@ -78,7 +115,7 @@ const Forum = (props) => {
                   avatar={renderAvatar(post.author.profile_pic_url)}
                   title={post.title}
                 />
-                <Descriptions size="small" col={2}>
+                <Descriptions size="small">
                   <Descriptions.Item label="Posted by">
                     {post.author.nickname}
                   </Descriptions.Item>
@@ -87,8 +124,8 @@ const Forum = (props) => {
                   </Descriptions.Item>
                 </Descriptions>
                 <Typography className="post-content">
-                  {post.content.split("\n").map((para) => (
-                    <Paragraph key={para}>{para}</Paragraph>
+                  {post.content.split("\n").map((para, index) => (
+                    <Paragraph key={index}>{para}</Paragraph>
                   ))}
                 </Typography>
               </Card>
@@ -120,17 +157,4 @@ const Forum = (props) => {
   );
 };
 
-Forum.propTypes = {
-  posts: PropTypes.array,
-  prevOffset: PropTypes.number,
-  nextOffset: PropTypes.number,
-  handleOffsetChange: PropTypes.func,
-};
-
-const mapStateToProps = ({
-  communityReducer: { posts, prevOffset, nextOffset },
-}) => {
-  return { posts, prevOffset, nextOffset };
-};
-
-export default connect(mapStateToProps)(Forum);
+export default connector(Forum);

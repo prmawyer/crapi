@@ -66,12 +66,6 @@ const userReducer = (
         ...state,
         fetchingData: false,
       };
-    case actionTypes.VALIDATE_ACCESS_TOKEN:
-      console.log("VALIDATE_ACCESS_TOKEN");
-      return {
-        ...state,
-        fetchingData: true,
-      };
     case actionTypes.VALIDATED_ACCESS_TOKEN:
       return {
         ...state,

@@ -1,27 +1,29 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
 import { Button, Form, Input } from "antd";
-
 import React from "react";
-
-import PropTypes from "prop-types";
 import { TOKEN_REQUIRED } from "../../constants/messages";
 
-const TokenForm = (props) => {
-  const { onFinish, errorMessage, hasErrored } = props;
+interface TokenFormProps {
+  onFinish: (values: { token: string }) => void;
+  errorMessage?: string;
+  hasErrored?: boolean;
+}
+
+const TokenForm: React.FC<TokenFormProps> = ({ onFinish, errorMessage, hasErrored }) => {
   return (
     <Form
       name="password"
@@ -49,12 +51,6 @@ const TokenForm = (props) => {
       </Form.Item>
     </Form>
   );
-};
-
-TokenForm.propTypes = {
-  onFinish: PropTypes.func,
-  errorMessage: PropTypes.string,
-  hasErrored: PropTypes.bool,
 };
 
 export default TokenForm;

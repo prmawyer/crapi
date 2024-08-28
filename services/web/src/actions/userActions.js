@@ -59,10 +59,11 @@ export const logOutUserAction = ({ callback }) => {
   };
 };
 
-export const validateAccessTokenAction = () => {
+export const validateAccessTokenAction = ({ accessToken }) => {
   console.log("validateAccessTokenAction action");
   return {
     type: actionTypes.VALIDATE_ACCESS_TOKEN,
+    payload: { accessToken },
   };
 };
 

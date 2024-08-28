@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -16,29 +16,64 @@
 import "./styles.css";
 
 import React from "react";
-import PropTypes from "prop-types";
 import { Row, Col, Layout, Card, Button, Avatar } from "antd";
 import { PageHeader } from "@ant-design/pro-components";
 import { RollbackOutlined } from "@ant-design/icons";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { formatDateFromIso } from "../../utils";
 import { useNavigate } from "react-router-dom";
+
 const { Content } = Layout;
 const { Meta } = Card;
 
-const PastOrders = (props) => {
+interface Order {
+  id: string;
+  product: {
+    name: string;
+    price: number;
+    image_url: string;
+  };
+  quantity: number;
+  created_on: string;
+  status: string;
+}
+
+interface RootState {
+  shopReducer: {
+    pastOrders: Order[];
+    prevOffset: number | null;
+    nextOffset: number | null;
+  };
+}
+
+const mapStateToProps = (state: RootState) => ({
+  pastOrders: state.shopReducer.pastOrders,
+  prevOffset: state.shopReducer.prevOffset,
+  nextOffset: state.shopReducer.nextOffset,
+});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+interface PastOrdersProps extends PropsFromRedux {
+  returnOrder: (id: string) => void;
+  handleOffsetChange: (offset: number | null) => void;
+}
+
+const PastOrders: React.FC<PastOrdersProps> = (props) => {
   const navigate = useNavigate();
   const { pastOrders } = props;
 
-  const renderAvatar = (url) => (
+  const renderAvatar = (url: string) => (
     <Avatar shape="square" className="order-avatar" size={250} src={url} />
   );
 
-  const renderOrderDescription = (order) => (
+  const renderOrderDescription = (order: Order) => (
     <>
       <PageHeader
-        title={`$${order.product.name}, $${order.product.price * order.quantity}`}
-        subtitle={`$${formatDateFromIso(order.created_on)}`}
+        title={`${order.product.name}, $${order.product.price * order.quantity}`}
+        subTitle={`${formatDateFromIso(order.created_on)}`}
         extra={[
           <Button
             type="primary"
@@ -75,7 +110,7 @@ const PastOrders = (props) => {
         onBack={() => navigate("/shop")}
       />
       <Content>
-        <Row gutter={[40, 40]}>
+        <Row gutter={[20, 20]}>
           {pastOrders.map((order) => (
             <Col span={8} key={order && order.id}>
               <Card
@@ -114,18 +149,4 @@ const PastOrders = (props) => {
   );
 };
 
-PastOrders.propTypes = {
-  pastOrders: PropTypes.array,
-  returnOrder: PropTypes.func,
-  prevOffset: PropTypes.number,
-  nextOffset: PropTypes.number,
-  handleOffsetChange: PropTypes.func,
-};
-
-const mapStateToProps = ({
-  shopReducer: { pastOrders, prevOffset, nextOffset },
-}) => {
-  return { pastOrders, prevOffset, nextOffset };
-};
-
-export default connect(mapStateToProps)(PastOrders);
+export default connector(PastOrders);

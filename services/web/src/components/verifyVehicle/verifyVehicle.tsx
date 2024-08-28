@@ -1,20 +1,19 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
 import React from "react";
-import PropTypes from "prop-types";
 import { Button, Form, Card, Input } from "antd";
 import {
   PIN_CODE_REQUIRED,
@@ -24,8 +23,13 @@ import {
 } from "../../constants/messages";
 import { PIN_CODE_VALIDATION, VIN_VALIDATION } from "../../constants/constants";
 
-const VerifyVehicle = (props) => {
-  const { hasErrored, errorMessage, onFinish } = props;
+interface VerifyVehicleProps {
+  hasErrored: boolean;
+  errorMessage: string;
+  onFinish: (values: any) => void;
+}
+
+const VerifyVehicle: React.FC<VerifyVehicleProps> = ({ hasErrored, errorMessage, onFinish }) => {
   return (
     <div className="container">
       <Card
@@ -72,12 +76,6 @@ const VerifyVehicle = (props) => {
       </Card>
     </div>
   );
-};
-
-VerifyVehicle.propTypes = {
-  onFinish: PropTypes.func,
-  hasErrored: PropTypes.bool,
-  errorMessage: PropTypes.string,
 };
 
 export default VerifyVehicle;

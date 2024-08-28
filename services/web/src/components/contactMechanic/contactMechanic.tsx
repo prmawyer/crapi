@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -15,8 +15,7 @@
 
 import React from "react";
 
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import { connect, ConnectedProps } from "react-redux";
 import { Button, Form, Card, Input, Select } from "antd";
 import {
   VIN_REQUIRED,
@@ -26,11 +25,31 @@ import {
 
 const { Option } = Select;
 
-const ContactMechanic = (props) => {
+interface Mechanic {
+  mechanic_code: string;
+}
+
+interface RootState {
+  vehicleReducer: {
+    mechanics: Mechanic[];
+  };
+}
+
+interface ContactMechanicProps extends PropsFromRedux {
+  onFinish: (values: any) => void;
+  hasErrored: boolean;
+  errorMessage: string;
+}
+
+const ContactMechanic: React.FC<ContactMechanicProps> = ({
+  mechanics,
+  hasErrored,
+  errorMessage,
+  onFinish,
+}) => {
   const urlParams = new URLSearchParams(window.location.search);
   const VIN = urlParams.get("VIN");
 
-  const { mechanics, hasErrored, errorMessage, onFinish } = props;
   return (
     <div className="container">
       <Card title="Contact Mechanic" bordered={false} className="form-card">
@@ -86,15 +105,12 @@ const ContactMechanic = (props) => {
   );
 };
 
-const mapStateToProps = ({ vehicleReducer: { mechanics } }) => {
-  return { mechanics };
-};
+const mapStateToProps = (state: RootState) => ({
+  mechanics: state.vehicleReducer.mechanics,
+});
 
-ContactMechanic.propTypes = {
-  mechanics: PropTypes.array,
-  onFinish: PropTypes.func,
-  hasErrored: PropTypes.bool,
-  errorMessage: PropTypes.string,
-};
+const connector = connect(mapStateToProps);
 
-export default connect(mapStateToProps)(ContactMechanic);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(ContactMechanic);

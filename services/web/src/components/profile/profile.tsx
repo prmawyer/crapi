@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -18,7 +18,6 @@ import "./profile.css";
 
 import React, { useRef } from "react";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
 import {
   Row,
   Col,
@@ -43,15 +42,38 @@ import { useNavigate } from "react-router-dom";
 const { Content } = Layout;
 const { Meta } = Card;
 
-const Profile = (props) => {
+interface UserData {
+  name: string;
+  email: string;
+  number: string;
+}
+
+interface ProfileData {
+  profilePicData?: string;
+  videoData?: string;
+  videoName?: string;
+}
+
+interface ProfileProps {
+  hasErrored: boolean;
+  errorMessage: string;
+  userData: UserData;
+  profileData: ProfileData;
+  uploadProfilePic: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  uploadVideo: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  isVideoModalOpen: boolean;
+  setIsVideoModalOpen: (isOpen: boolean) => void;
+  onVideoFormFinish: (values: { videoName: string }) => void;
+  shareVideoWithCommunity: () => void;
+}
+
+const Profile: React.FC<ProfileProps> = (props) => {
   const navigate = useNavigate();
   const {
     hasErrored,
     errorMessage,
-
     userData,
     profileData,
-
     uploadProfilePic,
     uploadVideo,
     isVideoModalOpen,
@@ -60,11 +82,11 @@ const Profile = (props) => {
     shareVideoWithCommunity,
   } = props;
 
-  const picInputRef = useRef();
-  const videoInputRef = useRef();
+  const picInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
-  const takeVideoAction = (input) => {
-    if (input.key === "1") videoInputRef.current.click();
+  const takeVideoAction = (input: { key: string }) => {
+    if (input.key === "1" && videoInputRef.current) videoInputRef.current.click();
     if (input.key === "2") setIsVideoModalOpen(true);
     if (input.key === "3") shareVideoWithCommunity();
   };
@@ -81,7 +103,7 @@ const Profile = (props) => {
         <Button
           className="button"
           type="text"
-          onClick={() => videoInputRef.current.click()}
+          onClick={() => videoInputRef.current?.click()}
         >
           Upload Video
         </Button>
@@ -95,9 +117,10 @@ const Profile = (props) => {
       shape="round"
       icon={<CameraOutlined />}
       size="large"
-      onClick={() => picInputRef.current.click()}
+      onClick={() => picInputRef.current?.click()}
     />
   );
+
   const renderProfileDescription = () => (
     <Row gutter={[60, 20]}>
       <Col flex="200px">
@@ -111,7 +134,7 @@ const Profile = (props) => {
           />
           <Avatar
             shape="square"
-            size={200}
+            size={{ xs: 200, sm: 229, md: 240, lg: 260, xl: 280, xxl: 300 }}
             src={profileData.profilePicData || defaultProficPic}
           />
         </Badge>
@@ -215,23 +238,8 @@ const Profile = (props) => {
   );
 };
 
-const mapStateToProps = ({ userReducer, profileReducer }) => {
+const mapStateToProps = ({ userReducer, profileReducer }: { userReducer: UserData; profileReducer: ProfileData }) => {
   return { userData: userReducer, profileData: profileReducer };
-};
-
-Profile.propTypes = {
-  hasErrored: PropTypes.bool,
-  errorMessage: PropTypes.string,
-
-  userData: PropTypes.object,
-  profileData: PropTypes.object,
-
-  uploadProfilePic: PropTypes.func,
-  uploadVideo: PropTypes.func,
-  isVideoModalOpen: PropTypes.bool,
-  setIsVideoModalOpen: PropTypes.func,
-  onVideoFormFinish: PropTypes.func,
-  shareVideoWithCommunity: PropTypes.func,
 };
 
 export default connect(mapStateToProps)(Profile);

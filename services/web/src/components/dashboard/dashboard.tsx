@@ -1,13 +1,13 @@
 /*
  *
- * Licensed under the Apache License, Version 2.0 (the “License”);
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an “AS IS” BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -15,9 +15,8 @@
 
 import "./dashboard.css";
 
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import React from "react";
-import PropTypes from "prop-types";
 import {
   Card,
   Row,
@@ -42,7 +41,31 @@ import { useNavigate } from "react-router-dom";
 const { Meta } = Card;
 const { Content } = Layout;
 
-const vehicleCardHeader = (vehicle, handleVehicleClick) => {
+interface Vehicle {
+  vin: string;
+  uuid: string;
+  year: number;
+  model: {
+    vehicle_img: string;
+    vehiclecompany: {
+      name: string;
+    };
+    model: string;
+    fuel_type: string;
+  };
+  vehicleLocation: {
+    latitude: number;
+    longitude: number;
+  };
+}
+
+interface RootState {
+  vehicleReducer: {
+    vehicles: Vehicle[];
+  };
+}
+
+const vehicleCardHeader = (vehicle: Vehicle, handleContactMechanic: (vin: string) => void) => {
   return (
     <PageHeader
       className="dashboard-header"
@@ -53,8 +76,8 @@ const vehicleCardHeader = (vehicle, handleVehicleClick) => {
           shape="round"
           icon={<ToolOutlined />}
           size="large"
-          onClick={handleVehicleClick}
-          key="add-vehicle"
+          onClick={() => handleContactMechanic(vehicle.vin)}
+          key="contact-mechanic"
         >
           Contact Mechanic
         </Button>,
@@ -63,18 +86,34 @@ const vehicleCardHeader = (vehicle, handleVehicleClick) => {
   );
 };
 
-const Dashboard = (props) => {
-  const { vehicles, refreshLocation, resendMail } = props;
+const connector = connect(
+  (state: RootState) => ({
+    vehicles: state.vehicleReducer.vehicles,
+  })
+);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+interface DashboardProps extends PropsFromRedux {
+  refreshLocation: (uuid: string) => void;
+  resendMail: () => void;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ vehicles, refreshLocation, resendMail }) => {
   const navigate = useNavigate();
-  const vehicleCardContent = (vehicle) => (
+  const vehicleCardContent = (vehicle: Vehicle) => (
     <>
-      <Row gutter={[20, 20]}>
-        <Col flex="420px">
-          <Avatar shape="square" size={400} src={vehicle.model.vehicle_img} />
+      <Row gutter={[10, 10]}>
+        <Col flex="30%">
+          <Avatar
+            shape="square"
+            size={{ xs: 200, sm: 229, md: 240, lg: 260, xl: 280, xxl: 300 }}
+            src={vehicle.model.vehicle_img}
+          />
         </Col>
-        <Col flex="auto">
+        <Col flex="70%">
           <Descriptions
-            size="large"
+            size="middle"
             column={1}
             className="vehicle-desc"
             bordered
@@ -97,7 +136,7 @@ const Dashboard = (props) => {
               <iframe
                 className="map-iframe"
                 width="100%"
-                height="360"
+                height="200"
                 src={getMapUrl(
                   vehicle.vehicleLocation.latitude,
                   vehicle.vehicleLocation.longitude,
@@ -111,7 +150,6 @@ const Dashboard = (props) => {
                 shape="round"
                 icon={<SyncOutlined />}
                 size="large"
-                // className="refresh-loc-btn"
                 onClick={() => refreshLocation(vehicle.uuid)}
               >
                 Refresh Location
@@ -135,10 +173,10 @@ const Dashboard = (props) => {
   const handleVerifyVehicleClick = () => {
     navigate("/verify-vehicle");
   };
-  const handleVehicleClick = () => {
-    navigate("/mechanic");
-  };
 
+  const handleContactMechanic = (vin: string) => {
+    navigate(`/contact-mechanic?VIN=${vin}`);
+  };
   return (
     <Layout className="page-container">
       <PageHeader
@@ -165,7 +203,7 @@ const Dashboard = (props) => {
             <Col span={24} key={vehicle.vin}>
               <Card className="vehicle-card">
                 <Meta
-                  title={vehicleCardHeader(vehicle, handleVehicleClick)}
+                  title={vehicleCardHeader(vehicle, handleContactMechanic)}
                   description={vehicleCardContent(vehicle)}
                 />
               </Card>
@@ -188,14 +226,4 @@ const Dashboard = (props) => {
   );
 };
 
-const mapStateToProps = ({ vehicleReducer: { vehicles } }) => {
-  return { vehicles };
-};
-
-Dashboard.propTypes = {
-  vehicles: PropTypes.array,
-  resendMail: PropTypes.func,
-  refreshLocation: PropTypes.func,
-};
-
-export default connect(mapStateToProps)(Dashboard);
+export default connector(Dashboard);
