@@ -39,7 +39,7 @@ import ForumContainer from "../../containers/forum/forum";
 import UnlockContainer from "../../containers/unlock/unlock";
 import NewPostContainer from "../../containers/newPost/newPost";
 import PostContainer from "../../containers/post/post";
-
+import VehicleServiceDashboardContainer from "../../containers/vehicleServiceDashboard/vehicleServiceDashboard";
 import {
   logOutUserAction,
   validateAccessTokenAction,
@@ -326,6 +326,19 @@ const StyledComp: React.FC<PropsFromRedux> = (props) => {
               element={
                 <AfterLogin
                   component={OrderContainer}
+                  isLoggedIn={props.isLoggedIn}
+                  componentRole={roleTypes.ROLE_USER}
+                  userRole={props.role}
+                  accessToken={props.accessToken}
+                  logOutUser={props.logOutUser}
+                />
+              }
+            />
+            <Route
+              path="/vehicle-service-dashboard"
+              element={
+                <AfterLogin
+                  component={VehicleServiceDashboardContainer}
                   isLoggedIn={props.isLoggedIn}
                   componentRole={roleTypes.ROLE_USER}
                   userRole={props.role}

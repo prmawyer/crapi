@@ -26,6 +26,7 @@ import {
   SERVICE_REQUEST_SENT,
   SERVICE_REQUEST_NOT_SENT,
   LOC_NOT_REFRESHED,
+  NO_SERVICES,
 } from "../constants/messages";
 
 interface ReceivedResponse extends Response {
@@ -299,6 +300,85 @@ export function* refreshLocation(action: MyAction): Generator<any, void, any> {
   }
 }
 
+/**
+ * Get the list of services allotted to this mechanic
+ * @payload {Object} payload
+ * @payload {string} payload.accessToken - Access token of the user
+ * @payload {Function} payload.callback - Callback method
+ */
+export function* getMechanicServices(action: MyAction): Generator<any, void, any> {
+  const { accessToken, callback } = action.payload;
+  let receivedResponse: Partial<Response> = {};
+  try {
+    yield put({ type: actionTypes.FETCHING_DATA });
+    const getUrl = APIService.WORKSHOP_SERVICE + requestURLS.GET_MECHANIC_SERVICES;
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    };
+
+    interface GetServicesResponse {
+      service_requests: any;
+      message: string;
+    }
+
+    const responseJSON: GetServicesResponse = yield fetch(getUrl, {
+      headers,
+      method: "GET",
+    }).then((response: Response) => {
+      receivedResponse = response;
+      return response.json();
+    });
+
+    yield put({ type: actionTypes.FETCHED_DATA, payload: responseJSON });
+    if (receivedResponse.ok) {
+      callback(responseTypes.SUCCESS, responseJSON.service_requests);
+    } else {
+      callback(responseTypes.FAILURE, responseJSON.message);
+    }
+  } catch (e) {
+    yield put({ type: actionTypes.FETCHED_DATA, payload: receivedResponse });
+    callback(responseTypes.FAILURE, NO_SERVICES);
+  }
+}
+
+export function* getVehicleServices(action: MyAction): Generator<any, void, any> {
+  console.log("Vehicle Services", action.payload);
+  const { accessToken, VIN, callback } = action.payload;
+  let receivedResponse: Partial<Response> = {};
+  try {
+    yield put({ type: actionTypes.FETCHING_DATA });
+    const getUrl = APIService.WORKSHOP_SERVICE + requestURLS.GET_VEHICLE_SERVICES.replace("<vehicleVIN>", VIN);
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    };
+
+    interface GetServicesResponse {
+      service_requests: any;
+      message: string;
+    }
+
+    const responseJSON: GetServicesResponse = yield fetch(getUrl, {
+      headers,
+      method: "GET",
+    }).then((response: Response) => {
+      receivedResponse = response;
+      return response.json();
+    });
+
+    yield put({ type: actionTypes.FETCHED_DATA, payload: responseJSON });
+    if (receivedResponse.ok) {
+      callback(responseTypes.SUCCESS, responseJSON.service_requests);
+    } else {
+      callback(responseTypes.FAILURE, responseJSON.message);
+    }
+  } catch (e) {
+    yield put({ type: actionTypes.FETCHED_DATA, payload: receivedResponse });
+    callback(responseTypes.FAILURE, NO_SERVICES);
+  }
+}
+
 export function* vehicleActionWatcher(): Generator<any, void, any> {
   yield takeLatest(actionTypes.RESEND_MAIL, resendMail);
   yield takeLatest(actionTypes.VERIFY_VEHICLE, verifyVehicle);
@@ -306,4 +386,6 @@ export function* vehicleActionWatcher(): Generator<any, void, any> {
   yield takeLatest(actionTypes.GET_MECHANICS, getMechanics);
   yield takeLatest(actionTypes.CONTACT_MECHANIC, contactMechanic);
   yield takeLatest(actionTypes.REFRESH_LOCATION, refreshLocation);
+  yield takeLatest(actionTypes.GET_MECHANIC_SERVICES, getMechanicServices);
+  yield takeLatest(actionTypes.GET_VEHICLE_SERVICES, getVehicleServices);
 }

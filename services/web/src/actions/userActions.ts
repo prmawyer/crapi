@@ -16,7 +16,7 @@
 import actionTypes from "../constants/actionTypes";
 
 interface ActionPayload {
-  callback: () => void;
+  callback: (...args: any[]) => void;
   [key: string]: any;
 }
 
@@ -142,10 +142,17 @@ export const resetPasswordAction = ({
   };
 };
 
-export const getServicesAction = ({ accessToken, callback, ...data }: ActionPayload & AccessTokenPayload) => {
+export const getMechanicServicesAction = ({ accessToken, callback, ...data }: ActionPayload & AccessTokenPayload) => {
   return {
-    type: actionTypes.GET_SERVICES,
+    type: actionTypes.GET_MECHANIC_SERVICES,
     payload: { accessToken, callback, ...data },
+  };
+};
+
+export const getVehicleServicesAction = ({ accessToken, VIN, callback, ...data }: ActionPayload & AccessTokenPayload) => {
+  return {
+    type: actionTypes.GET_VEHICLE_SERVICES,
+    payload: { accessToken, VIN, callback, ...data },
   };
 };
 

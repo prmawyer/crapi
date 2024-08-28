@@ -33,6 +33,7 @@ import {
   NO_SERVICES,
 } from "../constants/messages";
 import MyAction from "../types/action";
+import { getMechanicServices, getVehicleServices } from "./vehicleSaga";
 
 interface Response {
   ok: boolean;
@@ -454,48 +455,6 @@ export function* verifyToken(action: MyAction): Generator<any, void, any> {
   }
 }
 
-/**
- * Get the list of services allotted to this mechanic
- * @payload {Object} payload
- * @payload {string} payload.accessToken - Access token of the user
- * @payload {Function} payload.callback - Callback method
- */
-export function* getServices(action: MyAction): Generator<any, void, any> {
-  const { accessToken, callback } = action.payload;
-  let receivedResponse: Partial<Response> = {};
-  try {
-    yield put({ type: actionTypes.FETCHING_DATA });
-    const getUrl = APIService.WORKSHOP_SERVICE + requestURLS.GET_SERVICES;
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    };
-
-    interface GetServicesResponse {
-      service_requests: any;
-      message: string;
-    }
-
-    const responseJSON: GetServicesResponse = yield fetch(getUrl, {
-      headers,
-      method: "GET",
-    }).then((response: Response) => {
-      receivedResponse = response;
-      return response.json();
-    });
-
-    yield put({ type: actionTypes.FETCHED_DATA, payload: responseJSON });
-    if (receivedResponse.ok) {
-      callback(responseTypes.SUCCESS, responseJSON.service_requests);
-    } else {
-      callback(responseTypes.FAILURE, responseJSON.message);
-    }
-  } catch (e) {
-    yield put({ type: actionTypes.FETCHED_DATA, payload: receivedResponse });
-    callback(responseTypes.FAILURE, NO_SERVICES);
-  }
-}
-
 export function* userActionWatcher() {
   yield takeLatest(actionTypes.LOG_IN, logIn);
   yield takeLatest(actionTypes.VALIDATE_ACCESS_TOKEN, validateAccessToken);
@@ -506,5 +465,6 @@ export function* userActionWatcher() {
   yield takeLatest(actionTypes.RESET_PASSWORD, resetPassword);
   yield takeLatest(actionTypes.CHANGE_EMAIL, changeEmail);
   yield takeLatest(actionTypes.VERIFY_TOKEN, verifyToken);
-  yield takeLatest(actionTypes.GET_SERVICES, getServices);
+  yield takeLatest(actionTypes.GET_MECHANIC_SERVICES, getMechanicServices);
+  yield takeLatest(actionTypes.GET_VEHICLE_SERVICES, getVehicleServices);
 }

@@ -65,12 +65,22 @@ interface RootState {
   };
 }
 
-const vehicleCardHeader = (vehicle: Vehicle, handleContactMechanic: (vin: string) => void) => {
+const vehicleCardHeader = (vehicle: Vehicle, handleVehicleServiceClick: (vin: string) => void, handleContactMechanic: (vin: string) => void) => {
   return (
     <PageHeader
       className="dashboard-header"
       title={`VIN: ${vehicle.vin}`}
       extra={[
+        <Button
+          type="primary"
+          shape="round"
+          icon={<ToolOutlined />}
+          size="large"
+          onClick={() => handleVehicleServiceClick(vehicle.vin)}
+          key="vehicle-service-history"
+        >
+          Vehicle Service History
+        </Button>,
         <Button
           type="primary"
           shape="round"
@@ -174,6 +184,10 @@ const Dashboard: React.FC<DashboardProps> = ({ vehicles, refreshLocation, resend
     navigate("/verify-vehicle");
   };
 
+  const handleVehicleServiceClick = (vin: string) => {
+    navigate(`/vehicle-service-dashboard?VIN=${vin}`);
+  };
+
   const handleContactMechanic = (vin: string) => {
     navigate(`/contact-mechanic?VIN=${vin}`);
   };
@@ -203,7 +217,7 @@ const Dashboard: React.FC<DashboardProps> = ({ vehicles, refreshLocation, resend
             <Col span={24} key={vehicle.vin}>
               <Card className="vehicle-card">
                 <Meta
-                  title={vehicleCardHeader(vehicle, handleContactMechanic)}
+                  title={vehicleCardHeader(vehicle, handleVehicleServiceClick, handleContactMechanic)}
                   description={vehicleCardContent(vehicle)}
                 />
               </Card>
