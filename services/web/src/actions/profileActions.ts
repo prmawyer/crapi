@@ -15,7 +15,13 @@
 
 import actionTypes from "../constants/actionTypes";
 
-export const uploadProfilePicAction = ({ accessToken, callback, ...data }) => {
+interface ActionPayload {
+  accessToken: string;
+  callback: () => void;
+  [key: string]: any;
+}
+
+export const uploadProfilePicAction = ({ accessToken, callback, ...data }: ActionPayload) => {
   return {
     type: actionTypes.UPLOAD_PROFILE_PIC,
     payload: {
@@ -26,7 +32,7 @@ export const uploadProfilePicAction = ({ accessToken, callback, ...data }) => {
   };
 };
 
-export const uploadVideoAction = ({ accessToken, callback, ...data }) => {
+export const uploadVideoAction = ({ accessToken, callback, ...data }: ActionPayload) => {
   return {
     type: actionTypes.UPLOAD_VIDEO,
     payload: {
@@ -37,7 +43,7 @@ export const uploadVideoAction = ({ accessToken, callback, ...data }) => {
   };
 };
 
-export const changeVideoNameAction = ({ accessToken, callback, ...data }) => {
+export const changeVideoNameAction = ({ accessToken, callback, ...data }: ActionPayload) => {
   return {
     type: actionTypes.CHANGE_VIDEO_NAME,
     payload: {
@@ -48,7 +54,13 @@ export const changeVideoNameAction = ({ accessToken, callback, ...data }) => {
   };
 };
 
-export const convertVideoAction = ({ accessToken, videoId, callback }) => {
+interface ConvertVideoPayload {
+  accessToken: string;
+  videoId: string;
+  callback: () => void;
+}
+
+export const convertVideoAction = ({ accessToken, videoId, callback }: ConvertVideoPayload) => {
   return {
     type: actionTypes.CONVERT_VIDEO,
     payload: {

@@ -104,14 +104,14 @@ const Dashboard: React.FC<DashboardProps> = ({ vehicles, refreshLocation, resend
   const vehicleCardContent = (vehicle: Vehicle) => (
     <>
       <Row gutter={[10, 10]}>
-        <Col flex="30%">
+        <Col flex="30%" style={{ margin: "auto" }}>
           <Avatar
             shape="square"
             size={{ xs: 200, sm: 229, md: 240, lg: 260, xl: 280, xxl: 300 }}
             src={vehicle.model.vehicle_img}
           />
         </Col>
-        <Col flex="70%">
+        <Col flex="60%" style={{ margin: "auto" }}>
           <Descriptions
             size="middle"
             column={1}

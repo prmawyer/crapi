@@ -9,11 +9,9 @@
 .vehicle-desc {
   /* text-align: center; */
   background-color: #f0f0f0;
-  padding: 20px;
 }
 
 .vehicle-desc .ant-descriptions-view {
-  margin: 1% 5%;
   width: auto;
 }
 

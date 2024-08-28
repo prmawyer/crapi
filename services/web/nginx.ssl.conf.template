@@ -96,13 +96,17 @@ server {
     proxy_ssl_trusted_certificate /app/certs/server.crt;
   }
 
+  location /health {
+    add_header Content-Type text/plain;
+    return 200 'OK';
+  }
+
   location / {
-    try_files $uri /index.html =404;
-    add_header Last-Modified $date_gmt;
-    add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-    if_modified_since off;
-    expires off;
-    etag off;
+    set $fallback_file /index.html;
+    if ($http_accept !~ text/html) {
+        set $fallback_file =404;
+    }
+    try_files $uri $uri/ $fallback_file =404;
   }
 }
 
@@ -190,13 +194,16 @@ server {
     sub_filter_once off;
   }
 
+  location /health {
+    add_header Content-Type text/plain;
+    return 200 'OK';
+  }
+
   location / {
-    index index.html;
-    autoindex on;
     set $fallback_file /index.html;
     if ($http_accept !~ text/html) {
-        set $fallback_file /null;
+        set $fallback_file =404;
     }
-    try_files $uri $fallback_file;
+    try_files $uri $uri/ $fallback_file =404;
   }
 }

@@ -15,14 +15,57 @@
 
 import actionTypes from "../constants/actionTypes";
 
-export const logInUserAction = ({ email, password, callback }) => {
+interface ActionPayload {
+  callback: () => void;
+  [key: string]: any;
+}
+
+interface LoginPayload extends ActionPayload {
+  email: string;
+  password: string;
+}
+
+interface UnlockPayload extends ActionPayload {
+  email: string;
+  code: string;
+}
+
+interface UnlockRedirectPayload extends ActionPayload {
+  email: string;
+  message: string;
+}
+
+interface SignUpPayload extends ActionPayload {
+  name: string;
+  email: string;
+  number: string;
+  password: string;
+}
+
+interface AccessTokenPayload {
+  accessToken: string;
+}
+
+interface VerifyOTPPayload extends ActionPayload {
+  otp: string;
+  email: string;
+  password: string;
+}
+
+interface ResetPasswordPayload extends ActionPayload {
+  email: string;
+  accessToken: string;
+  password: string;
+}
+
+export const logInUserAction = ({ email, password, callback }: LoginPayload) => {
   return {
     type: actionTypes.LOG_IN,
     payload: { email, password, callback },
   };
 };
 
-export const unlockUserAction = ({ email, code, callback }) => {
+export const unlockUserAction = ({ email, code, callback }: UnlockPayload) => {
   console.log("unlockUserAction", email, code, callback);
   return {
     type: actionTypes.UNLOCK_USER,
@@ -30,7 +73,7 @@ export const unlockUserAction = ({ email, code, callback }) => {
   };
 };
 
-export const unlockRedirectUserAction = ({ email, message, callback }) => {
+export const unlockRedirectUserAction = ({ email, message, callback }: UnlockRedirectPayload) => {
   console.log("unlockRedirectUserAction", email, message, callback);
   return {
     type: actionTypes.UNLOCK_USER_REDIRECT,
@@ -44,7 +87,7 @@ export const signUpUserAction = ({
   number,
   password,
   callback,
-}) => {
+}: SignUpPayload) => {
   return {
     type: actionTypes.SIGN_UP,
     payload: { name, email, number, password, callback },
@@ -52,14 +95,14 @@ export const signUpUserAction = ({
 };
 
 // clear store data and local storage and log user out
-export const logOutUserAction = ({ callback }) => {
+export const logOutUserAction = ({ callback }: ActionPayload) => {
   return {
     type: actionTypes.LOG_OUT,
     payload: { callback },
   };
 };
 
-export const validateAccessTokenAction = ({ accessToken }) => {
+export const validateAccessTokenAction = ({ accessToken }: AccessTokenPayload) => {
   console.log("validateAccessTokenAction action");
   return {
     type: actionTypes.VALIDATE_ACCESS_TOKEN,
@@ -73,14 +116,14 @@ export const invalidSessionAction = () => {
   };
 };
 
-export const forgotPasswordAction = ({ email, callback }) => {
+export const forgotPasswordAction = ({ email, callback }: LoginPayload) => {
   return {
     type: actionTypes.FORGOT_PASSWORD,
     payload: { email, callback },
   };
 };
 
-export const verifyOTPAction = ({ otp, email, password, callback }) => {
+export const verifyOTPAction = ({ otp, email, password, callback }: VerifyOTPPayload) => {
   return {
     type: actionTypes.VERIFY_OTP,
     payload: { otp, email, password, callback },
@@ -92,28 +135,28 @@ export const resetPasswordAction = ({
   accessToken,
   password,
   callback,
-}) => {
+}: ResetPasswordPayload) => {
   return {
     type: actionTypes.RESET_PASSWORD,
     payload: { email, accessToken, password, callback },
   };
 };
 
-export const getServicesAction = ({ accessToken, callback, ...data }) => {
+export const getServicesAction = ({ accessToken, callback, ...data }: ActionPayload & AccessTokenPayload) => {
   return {
     type: actionTypes.GET_SERVICES,
     payload: { accessToken, callback, ...data },
   };
 };
 
-export const changeEmailAction = ({ accessToken, callback, ...data }) => {
+export const changeEmailAction = ({ accessToken, callback, ...data }: ActionPayload & AccessTokenPayload) => {
   return {
     type: actionTypes.CHANGE_EMAIL,
     payload: { accessToken, callback, ...data },
   };
 };
 
-export const verifyTokenAction = ({ accessToken, callback, ...data }) => {
+export const verifyTokenAction = ({ accessToken, callback, ...data }: ActionPayload & AccessTokenPayload) => {
   return {
     type: actionTypes.VERIFY_TOKEN,
     payload: { accessToken, callback, ...data },

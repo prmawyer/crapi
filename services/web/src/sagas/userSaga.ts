@@ -233,12 +233,17 @@ export function* signUp(action: MyAction): Generator<any, void, any> {
       "Content-Type": "application/json",
     };
     // remove special chars from number
-    const cleanedNumber = number.replace(/[^0-9+]/g, "");
+    let cleanedNumber = number.replace(/[^0-9+]/g, "");
     console.log("number", cleanedNumber);
     const responseJSON = yield fetch(postUrl, {
       headers,
       method: "POST",
-      body: JSON.stringify({ name, email, cleanedNumber, password }),
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        number: cleanedNumber,
+        password: password,
+      }),
     }).then((response: Response) => {
       receivedResponse = response;
       if (receivedResponse.ok) return response;
