@@ -36,10 +36,10 @@ public class ChangePhoneController {
   }
 
   /**
-   * @param changeEmailForm changeEmailForm contains old email and new email, with token, this
-   *     function will verify email and token
+   * @param changePhoneForm changeEmailForm contains old phone number and new phone number, with otp, this
+   *     function will verify number and otp
    * @param request getting jwt token for user from request header
-   * @return verify token if it is valid then it will update the user email
+   * @return verify if otp is valid then it will update the user phone number
    */
   @PostMapping("v2/user/verify-phone-otp")
   public ResponseEntity<CRAPIResponse> verifyPhoneOTP(
