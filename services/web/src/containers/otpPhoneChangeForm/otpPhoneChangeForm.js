@@ -12,19 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Modal } from "antd";
-import React from "react";
 
+import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { Modal } from "antd";
+import { verifyPhoneChangeOTPAction } from "../../actions/userActions";
 import responseTypes from "../../constants/responseTypes";
 import { SUCCESS_MESSAGE } from "../../constants/messages";
-import NewPhoneNumberForm from "../../components/newPhoneNumberForm/newPhoneNumberForm";
-import { changePhoneNumberAction } from "../../actions/userActions";
+import { useNavigate } from "react-router-dom";
+import OTPChangePhoneForm from "../../components/otpChangePhoneForm/otpChangePhoneForm";
 
-const NewPhoneNumberFormContainer = (props) => {
-  const { accessToken, oldPhoneNumber, onPhoneNumberChange } = props;
-
+const OtpPhoneChangeFormContainer = (props) => {
+  const { accessToken, oldPhoneNumber } = props;
+  const navigate = useNavigate();
   const [hasErrored, setHasErrored] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
 
@@ -33,7 +34,7 @@ const NewPhoneNumberFormContainer = (props) => {
       Modal.success({
         title: SUCCESS_MESSAGE,
         content: data,
-        onOk: () => props.setCurrentStep(props.currentStep + 1),
+        onOk: () => navigate("/my-profile"),
       });
     } else {
       setHasErrored(true);
@@ -42,42 +43,41 @@ const NewPhoneNumberFormContainer = (props) => {
   };
 
   const onFinish = (values) => {
-    props.changePhoneNumber({
+    const { accessToken, number, newPhoneNumber } = props;
+    props.verifyPhoneChangeOTP({
       ...values,
       callback,
       accessToken,
+      new_number: number,
       old_number: oldPhoneNumber,
     });
   };
 
   return (
-    <NewPhoneNumberForm
+    <OTPChangePhoneForm
       onFinish={onFinish}
       hasErrored={hasErrored}
       errorMessage={errorMessage}
-      onPhoneNumberChange={onPhoneNumberChange}
     />
   );
+};
+
+const mapDispatchToProps = {
+  verifyPhoneChangeOTP: verifyPhoneChangeOTPAction,
 };
 
 const mapStateToProps = ({ userReducer: { accessToken, number } }) => {
   return { accessToken, oldPhoneNumber: number };
 };
 
-const mapDispatchToProps = {
-  changePhoneNumber: changePhoneNumberAction,
-};
-
-NewPhoneNumberFormContainer.propTypes = {
+OtpPhoneChangeFormContainer.propTypes = {
+  verifyPhoneChangeOTP: PropTypes.func,
   oldPhoneNumber: PropTypes.string,
+  newPhoneNumber: PropTypes.string,
   accessToken: PropTypes.string,
-  changePhoneNumber: PropTypes.func,
-  currentStep: PropTypes.number,
-  setCurrentStep: PropTypes.func,
-  onPhoneNumberChange: PropTypes.func,
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(NewPhoneNumberFormContainer);
+)(OtpPhoneChangeFormContainer);

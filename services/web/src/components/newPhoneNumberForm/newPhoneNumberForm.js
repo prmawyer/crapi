@@ -36,7 +36,7 @@ const NewPhoneNumberForm = (props) => {
       <Form.Item>
         {hasErrored && <div className="error-message">{errorMessage}</div>}
         <Button type="primary" htmlType="submit" className="form-button">
-          Send OTP for verification. 
+          Send OTP for verification.
         </Button>
       </Form.Item>
     </Form>

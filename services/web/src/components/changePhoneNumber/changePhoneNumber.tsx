@@ -1,11 +1,26 @@
+/*
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Card, Steps } from "antd";
 
 import React, { useState } from "react";
 
 import PropTypes from "prop-types";
 
-import TokenFormContainer from "../../containers/tokenForm/tokenForm";
 import newPhoneNumberFormContainer from "../../containers/newPhoneNumberForm/newPhoneNumberForm";
+import otpPhoneChangeFormContainer from "../../containers/otpPhoneChangeForm/otpPhoneChangeForm";
 
 const { Step } = Steps;
 
@@ -21,12 +36,12 @@ const ChangePhoneNumber: React.FC = () => {
       component: newPhoneNumberFormContainer,
     },
     {
-      title: "Email Verification",
-      component: TokenFormContainer,
+      title: "OTP Verification",
+      component: otpPhoneChangeFormContainer,
     },
   ];
 
-  const [number,setNumber] = useState("");
+  const [number, setNumber] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
 
   const handleStepChange = (step: number) => setCurrentStep(step);
@@ -47,7 +62,7 @@ const ChangePhoneNumber: React.FC = () => {
           <CurrentComponent
             currentStep={currentStep}
             setCurrentStep={handleStepChange}
-            oldPhoneNumber={number}
+            number={number}
             onPhoneNumberChange={handlePhoneNumberChange}
           />
         </div>
