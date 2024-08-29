@@ -170,6 +170,13 @@ export const changeEmailAction = ({ accessToken, callback, ...data }: ActionPayl
   };
 };
 
+export const changePhoneNumberAction = ({ accessToken, callback, ...data }: ActionPayload & AccessTokenPayload) => {
+  return {
+    type: actionTypes.CHANGE_PHONE_NUMBER,
+    payload: { accessToken, callback, ...data },
+  };
+};
+
 export const verifyTokenAction = ({ accessToken, callback, ...data }: ActionPayload & AccessTokenPayload) => {
   return {
     type: actionTypes.VERIFY_TOKEN,

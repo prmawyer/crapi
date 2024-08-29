@@ -156,6 +156,15 @@ const Profile: React.FC<ProfileProps> = (props) => {
           </Descriptions.Item>
           <Descriptions.Item label="Phone No.">
             {userData.number}
+            <Button
+              type="primary"
+              shape="round"
+              className="change-phone-number-btn"
+              icon={<EditOutlined />}
+              onClick={() => navigate("/change-phone-number")}
+            >
+              Change phone number
+            </Button>
           </Descriptions.Item>
         </Descriptions>
       </Col>
