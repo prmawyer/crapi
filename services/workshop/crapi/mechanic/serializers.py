@@ -41,8 +41,11 @@ class MechanicServiceRequestSerializer(serializers.ModelSerializer):
     """
     Serializer for Mechanic model
     """
+
     def get_comments(self, obj):
-        comments = ServiceComment.objects.filter(service_request=obj).order_by("-created_on")
+        comments = ServiceComment.objects.filter(service_request=obj).order_by(
+            "-created_on"
+        )
         return ServiceCommentViewSerializer(comments, many=True).data
 
     comments = serializers.SerializerMethodField()
