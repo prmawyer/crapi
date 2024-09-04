@@ -152,7 +152,7 @@ export function* changeVideoName(action: MyAction): Generator<any, void, any> {
         type: actionTypes.VIDEO_NAME_CHANGED,
         payload: responseJson,
       });
-      callback(responseTypes.SUCCESS, VIDEO_NAME_CHANGED);
+      callback(responseTypes.SUCCESS, responseJson);
     } else {
       callback(responseTypes.FAILURE, responseJson.message);
     }
