@@ -16,10 +16,15 @@
 import "./nav.css";
 
 import { Button, Dropdown, Menu, Avatar, Layout, Space } from "antd";
-import { LogoutOutlined, EditOutlined, ProfileOutlined, CaretDownOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  EditOutlined,
+  ProfileOutlined,
+  CaretDownOutlined,
+} from "@ant-design/icons";
 import React from "react";
 import roleTypes from "../../constants/roleTypes";
-import type { MenuProps } from 'antd';
+import type { MenuProps } from "antd";
 import { useNavigate } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { logOutUserAction } from "../../actions/userActions";
@@ -68,9 +73,9 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     else if (input.key === "forum") navigate(`/forum`);
   };
 
-  type MenuItem = Required<MenuProps>['items'][number];
+  type MenuItem = Required<MenuProps>["items"][number];
 
-  const menuitems: MenuItem[] = []
+  const menuitems: MenuItem[] = [];
   menuitems.push({ key: "dashboard", label: "Dashboard" });
   if (role !== roleTypes.ROLE_MECHANIC) {
     menuitems.push({ key: "shop", label: "Shop" });
@@ -86,11 +91,26 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     />
   );
 
-  const sideMenuItems: MenuProps['items'] = [
-    { key: "profile", label: "My Profile", onClick: () => navigate("/my-profile"), icon: <ProfileOutlined /> },
-    { key: "password", label: "Change Password", onClick: () => navigate("/reset-password"), icon: <EditOutlined /> },
-    { key: "logout", label: "Logout", onClick: logout, icon: <LogoutOutlined /> },
-  ]
+  const sideMenuItems: MenuProps["items"] = [
+    {
+      key: "profile",
+      label: "My Profile",
+      onClick: () => navigate("/my-profile"),
+      icon: <ProfileOutlined />,
+    },
+    {
+      key: "password",
+      label: "Change Password",
+      onClick: () => navigate("/reset-password"),
+      icon: <EditOutlined />,
+    },
+    {
+      key: "logout",
+      label: "Logout",
+      onClick: logout,
+      icon: <LogoutOutlined />,
+    },
+  ];
 
   return (
     <Header>
