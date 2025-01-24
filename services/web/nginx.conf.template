@@ -98,6 +98,10 @@ server {
         set $fallback_file =404;
     }
     try_files $uri $uri/ $fallback_file =404;
+    sub_filter_once off; 
+    sub_filter "{{TRACEABLE_CAPTCHA_SITE_KEY_FOR_LOGIN_FLOW}}" "$TRACEABLE_CAPTCHA_SITE_KEY_FOR_LOGIN_FLOW"; 
+    sub_filter "{{TRACEABLE_CAPTCHA_URL}}" "$TRACEABLE_CAPTCHA_URL"; 
+    sub_filter_types application/javascript text/javascript; # Apply only for JS
   }
 }
 
@@ -196,5 +200,9 @@ server {
         set $fallback_file =404;
     }
     try_files $uri $uri/ $fallback_file =404;
+    sub_filter_once off; 
+    sub_filter "{{TRACEABLE_CAPTCHA_SITE_KEY_FOR_LOGIN_FLOW}}" "$TRACEABLE_CAPTCHA_SITE_KEY_FOR_LOGIN_FLOW"; 
+    sub_filter "{{TRACEABLE_CAPTCHA_URL}}" "$TRACEABLE_CAPTCHA_URL"; 
+    sub_filter_types application/javascript text/javascript; # Apply only for JS
   }
 }

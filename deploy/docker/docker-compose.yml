@@ -164,6 +164,8 @@ services:
       - WORKSHOP_SERVICE=crapi-workshop:${WORKSHOP_SERVER_PORT:-8000}
       - MAILHOG_WEB_SERVICE=mailhog:8025
       - TLS_ENABLED=${TLS_ENABLED:-false}
+      - TRACEABLE_CAPTCHA_SITE_KEY_FOR_LOGIN_FLOW=T-8784729
+      - TRACEABLE_CAPTCHA_URL=https://captcha.traceable.ai
     depends_on:
       crapi-community:
         condition: service_healthy

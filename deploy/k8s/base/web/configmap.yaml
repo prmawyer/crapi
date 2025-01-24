@@ -8,3 +8,5 @@ data:
   COMMUNITY_SERVICE: crapi-community:8087
   IDENTITY_SERVICE: crapi-identity:8080
   WORKSHOP_SERVICE: crapi-workshop:8000
+  TRACEABLE_CAPTCHA_SITE_KEY_FOR_LOGIN_FLOW: T-8784729
+  TRACEABLE_CAPTCHA_URL: https://captcha.traceable.ai
