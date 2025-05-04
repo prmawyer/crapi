@@ -80,7 +80,7 @@ class MessageParser {
       this.state.initializationRequired = await this.initializationRequired();
       console.log("State init:", this.state);
       return this.actionProvider.handleInitialize(
-        this.state.initializationRequired
+        this.state.initializationRequired,
       );
     } else if (
       message_l === "clear" ||
@@ -91,7 +91,7 @@ class MessageParser {
     } else if (this.state.initializing) {
       return this.actionProvider.handleInitialized(
         message,
-        this.state.accessToken
+        this.state.accessToken,
       );
     } else if (this.state.initializationRequired) {
       return this.actionProvider.handleNotInitialized();

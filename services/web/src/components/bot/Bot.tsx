@@ -20,12 +20,13 @@ import { APIService } from "../../constants/APIConstant";
 import MessageParser from "./MessageParser";
 import ActionProvider from "./ActionProvider";
 import Chatbot from "react-chatbot-kit";
-import {
-  Row,
-  Col,
-} from "antd";
+import { Row, Col } from "antd";
 import { Space } from "antd";
-import Icon, { CloseSquareOutlined, DeleteOutlined, WechatWorkOutlined } from "@ant-design/icons";
+import Icon, {
+  CloseSquareOutlined,
+  DeleteOutlined,
+  WechatWorkOutlined,
+} from "@ant-design/icons";
 import "./chatbot.css";
 
 const superagent = require("superagent");
@@ -39,7 +40,7 @@ const PandaSvg = (): JSX.Element => (
   </svg>
 );
 
-const ChatIcon = ({ size = '26pt' }: { size?: string | number }) => (
+const ChatIcon = ({ size = "26pt" }: { size?: string | number }) => (
   <WechatWorkOutlined style={{ fontSize: size }} />
 );
 
@@ -72,26 +73,34 @@ const ChatBotComponent: React.FC<ChatBotComponentProps> = (props) => {
 
   const headerText = (): JSX.Element => {
     return (
-      <div style={{ backgroundColor: "#04AA6D", color: "white", padding: "1px", borderRadius: "1px" }}>
-      <Space style={{ margin: "5px" }}>
-        &nbsp; &nbsp; Exploit CrapBot &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        <a
-          style={{
-            color: "white",
-            fontWeight: "bold",
-            background: "#0a5e9c",
-            borderRadius: "0px",
-          }}
-          href="##"
-          onClick={(e) => {
-            e.preventDefault();
-            toggleBot((prev) => !prev);
-          }}
-        >
-        <CloseSquareOutlined style={{ margin: "2px" }} />
-        </a>
-      </Space>
+      <div
+        style={{
+          backgroundColor: "#04AA6D",
+          color: "white",
+          padding: "1px",
+          borderRadius: "1px",
+        }}
+      >
+        <Space style={{ margin: "5px" }}>
+          &nbsp; &nbsp; Exploit CrapBot &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          &nbsp;
+          <a
+            style={{
+              color: "white",
+              fontWeight: "bold",
+              background: "#0a5e9c",
+              borderRadius: "0px",
+            }}
+            href="##"
+            onClick={(e) => {
+              e.preventDefault();
+              toggleBot((prev) => !prev);
+            }}
+          >
+            <CloseSquareOutlined style={{ margin: "2px" }} />
+          </a>
+        </Space>
       </div>
     );
   };
@@ -142,7 +151,6 @@ const ChatBotComponent: React.FC<ChatBotComponentProps> = (props) => {
     state: chatbotState,
   };
 
-
   const saveMessages = (messages: any[]): void => {
     localStorage.setItem("chat_messages", JSON.stringify(messages));
   };
@@ -155,8 +163,6 @@ const ChatBotComponent: React.FC<ChatBotComponentProps> = (props) => {
   const clearHistory = (): void => {
     localStorage.removeItem("chat_messages");
   };
-
-
 
   console.log("Config state", config_chatbot);
   return (

@@ -34,7 +34,8 @@ interface Config {
 const config: Config = {
   initialMessages: [
     createChatBotMessage(
-      `Hi, Welcome to crAPI! I'm ${botName}, and I'm here to be exploited.`, {}
+      `Hi, Welcome to crAPI! I'm ${botName}, and I'm here to be exploited.`,
+      {},
     ),
   ],
   botName,

@@ -34,14 +34,20 @@ interface State {
 type SetStateFunc = (stateUpdater: (state: State) => State) => void;
 
 class ActionProvider {
-  private createChatBotMessage: (message: string, options?: Partial<ChatBotMessage>) => ChatBotMessage;
+  private createChatBotMessage: (
+    message: string,
+    options?: Partial<ChatBotMessage>,
+  ) => ChatBotMessage;
   private setState: SetStateFunc;
   private createClientMessage: (message: string) => ChatBotMessage;
 
   constructor(
-    createChatBotMessage: (message: string, options?: Partial<ChatBotMessage>) => ChatBotMessage,
+    createChatBotMessage: (
+      message: string,
+      options?: Partial<ChatBotMessage>,
+    ) => ChatBotMessage,
     setStateFunc: SetStateFunc,
-    createClientMessage: (message: string) => ChatBotMessage
+    createClientMessage: (message: string) => ChatBotMessage,
   ) {
     this.createChatBotMessage = createChatBotMessage;
     this.setState = setStateFunc;
@@ -54,7 +60,7 @@ class ActionProvider {
       {
         loading: true,
         terminateLoading: true,
-      }
+      },
     );
     this.addMessageToState(message);
   };
@@ -69,7 +75,7 @@ class ActionProvider {
         {
           loading: true,
           terminateLoading: true,
-        }
+        },
       );
       this.addMessageToState(message);
     } else {
@@ -88,7 +94,7 @@ class ActionProvider {
         {
           loading: true,
           terminateLoading: true,
-        }
+        },
       );
       this.addMessageToState(message);
       return;
@@ -110,7 +116,7 @@ class ActionProvider {
             {
               loading: true,
               terminateLoading: true,
-            }
+            },
           );
           this.addMessageToState(errormessage);
           return;
@@ -121,7 +127,7 @@ class ActionProvider {
           {
             loading: true,
             terminateLoading: true,
-          }
+          },
         );
         this.addMessageToState(successmessage);
         this.addInitializedToState();
@@ -144,7 +150,7 @@ class ActionProvider {
             {
               loading: true,
               terminateLoading: true,
-            }
+            },
           );
           this.addMessageToState(errormessage);
           return;
@@ -166,7 +172,7 @@ class ActionProvider {
         {
           loading: true,
           terminateLoading: true,
-        }
+        },
       );
       this.addMessageToState(message);
     } else {
@@ -175,7 +181,7 @@ class ActionProvider {
         {
           loading: true,
           terminateLoading: true,
-        }
+        },
       );
       this.addMessageToState(message);
     }
@@ -198,7 +204,7 @@ class ActionProvider {
             {
               loading: true,
               terminateLoading: true,
-            }
+            },
           );
           this.addMessageToState(errormessage);
           return;
@@ -209,7 +215,7 @@ class ActionProvider {
           {
             loading: true,
             terminateLoading: true,
-          }
+          },
         );
         this.addMessageToState(successmessage);
         this.addInitializedToState();
