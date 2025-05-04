@@ -15,13 +15,31 @@
 import { APIService } from "../../constants/APIConstant";
 import request from "superagent";
 
+interface State {
+  initializationRequired?: boolean;
+  initializing?: boolean;
+  accessToken: string;
+}
+
+interface ActionProvider {
+  handleHelp: (initRequired: boolean) => void;
+  handleInitialize: (initRequired: boolean) => void;
+  handleResetContext: (accessToken: string) => void;
+  handleInitialized: (message: string, accessToken: string) => void;
+  handleNotInitialized: () => void;
+  handleChat: (message: string, accessToken: string) => void;
+}
+
 class MessageParser {
-  constructor(actionProvider, state) {
+  private actionProvider: ActionProvider;
+  private state: State;
+
+  constructor(actionProvider: ActionProvider, state: State) {
     this.actionProvider = actionProvider;
     this.state = state;
   }
 
-  async initializationRequired() {
+  async initializationRequired(): Promise<boolean> {
     const stateUrl = APIService.CHATBOT_SERVICE + "genai/state";
     let initRequired = false;
     // Wait for the response
@@ -46,7 +64,7 @@ class MessageParser {
     return initRequired;
   }
 
-  async parse(message) {
+  async parse(message: string): Promise<void> {
     console.log("State:", this.state);
     console.log("Message:", message);
     const message_l = message.toLowerCase();
@@ -62,7 +80,7 @@ class MessageParser {
       this.state.initializationRequired = await this.initializationRequired();
       console.log("State init:", this.state);
       return this.actionProvider.handleInitialize(
-        this.state.initializationRequired,
+        this.state.initializationRequired
       );
     } else if (
       message_l === "clear" ||
@@ -73,7 +91,7 @@ class MessageParser {
     } else if (this.state.initializing) {
       return this.actionProvider.handleInitialized(
         message,
-        this.state.accessToken,
+        this.state.accessToken
       );
     } else if (this.state.initializationRequired) {
       return this.actionProvider.handleNotInitialized();

@@ -15,32 +15,22 @@
 
 import React, { useState, useEffect } from "react";
 
-import config from "./config.jsx";
+import config from "./config";
 import { APIService } from "../../constants/APIConstant";
-import MessageParser from "./MessageParser.jsx";
-import ActionProvider from "./ActionProvider.jsx";
+import MessageParser from "./MessageParser";
+import ActionProvider from "./ActionProvider";
 import Chatbot from "react-chatbot-kit";
-import { connect } from "react-redux";
-import { createChatBotMessage } from "react-chatbot-kit";
 import {
-  PageHeader,
-  Card,
   Row,
   Col,
-  Tooltip,
-  Button,
-  Avatar,
-  Descriptions,
-  Layout,
-  Alert,
 } from "antd";
 import { Space } from "antd";
-import Icon, { CloseSquareOutlined, DeleteOutlined } from "@ant-design/icons";
+import Icon, { CloseSquareOutlined, DeleteOutlined, WechatWorkOutlined } from "@ant-design/icons";
 import "./chatbot.css";
 
 const superagent = require("superagent");
 
-const PandaSvg = () => (
+const PandaSvg = (): JSX.Element => (
   <svg viewBox="0 0 512 512" width="1em" height="1em" fill="currentColor">
     <path
       d="M437.333,21.355H74.667C33.493,21.355,0,54.848,0,96.021v213.333c0,41.173,33.493,74.667,74.667,74.667h48.256    l-36.821,92.032c-1.771,4.395-0.405,9.429,3.328,12.352c1.92,1.515,4.245,2.283,6.592,2.283c2.176,0,4.352-0.661,6.208-1.984    l146.56-104.683h188.587c41.173,0,74.667-33.493,74.667-74.667V96.021C512,54.848,478.507,21.355,437.333,21.355z"
@@ -49,10 +39,27 @@ const PandaSvg = () => (
   </svg>
 );
 
-const PandaIcon = (props) => <Icon component={PandaSvg} {...props} />;
+const ChatIcon = ({ size = '26pt' }: { size?: string | number }) => (
+  <WechatWorkOutlined style={{ fontSize: size }} />
+);
 
-const ChatBotComponent = (props) => {
-  const [chatbotState, setChatbotState] = useState({
+interface ChatBotState {
+  openapiKey: string | null;
+  initializing: boolean;
+  initializationRequired: boolean;
+  accessToken: string;
+  isLoggedIn: boolean;
+  role: string;
+}
+
+interface ChatBotComponentProps {
+  accessToken: string;
+  isLoggedIn: boolean;
+  role: string;
+}
+
+const ChatBotComponent: React.FC<ChatBotComponentProps> = (props) => {
+  const [chatbotState, setChatbotState] = useState<ChatBotState>({
     openapiKey: localStorage.getItem("openapi_key"),
     initializing: false,
     initializationRequired: false,
@@ -60,6 +67,34 @@ const ChatBotComponent = (props) => {
     isLoggedIn: props.isLoggedIn,
     role: props.role,
   });
+
+  const [showBot, toggleBot] = useState<boolean>(false);
+
+  const headerText = (): JSX.Element => {
+    return (
+      <div style={{ backgroundColor: "#04AA6D", color: "white", padding: "1px", borderRadius: "1px" }}>
+      <Space style={{ margin: "5px" }}>
+        &nbsp; &nbsp; Exploit CrapBot &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        <a
+          style={{
+            color: "white",
+            fontWeight: "bold",
+            background: "#0a5e9c",
+            borderRadius: "0px",
+          }}
+          href="##"
+          onClick={(e) => {
+            e.preventDefault();
+            toggleBot((prev) => !prev);
+          }}
+        >
+        <CloseSquareOutlined style={{ margin: "2px" }} />
+        </a>
+      </Space>
+      </div>
+    );
+  };
 
   useEffect(() => {
     const fetchInit = async () => {
@@ -70,7 +105,7 @@ const ChatBotComponent = (props) => {
         .get(stateUrl)
         .set("Accept", "application/json")
         .set("Content-Type", "application/json")
-        .then((res) => {
+        .then((res: any) => {
           console.log("I response:", res.body);
           if (res.status === 200) {
             if (res.body?.initialized === "true") {
@@ -80,7 +115,7 @@ const ChatBotComponent = (props) => {
             }
           }
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.log("Error prefetch: ", err);
         });
       console.log("Initialization required:", initRequired);
@@ -94,23 +129,34 @@ const ChatBotComponent = (props) => {
 
   const config_chatbot = {
     ...config,
+    customComponents: {
+      header: headerText,
+      botAvatar: () => (
+        <Icon
+          component={PandaSvg}
+          className="app-chatbot-button-icon"
+          style={{ fontSize: "40", color: "white" }}
+        />
+      ),
+    },
     state: chatbotState,
   };
 
-  const [showBot, toggleBot] = useState(false);
 
-  const saveMessages = (messages, HTMLString) => {
+  const saveMessages = (messages: any[]): void => {
     localStorage.setItem("chat_messages", JSON.stringify(messages));
   };
 
-  const loadMessages = () => {
-    const messages = JSON.parse(localStorage.getItem("chat_messages"));
+  const loadMessages = (): any[] => {
+    const messages = JSON.parse(localStorage.getItem("chat_messages") || "[]");
     return messages;
   };
 
-  const clearHistory = () => {
+  const clearHistory = (): void => {
     localStorage.removeItem("chat_messages");
   };
+
+
 
   console.log("Config state", config_chatbot);
   return (
@@ -121,45 +167,18 @@ const ChatBotComponent = (props) => {
             {showBot && (
               <Chatbot
                 config={config_chatbot}
-                botAvator={
-                  <Icon
-                    icon={PandaIcon}
-                    className="app-chatbot-button-icon"
-                    style={{ fontSize: "40", color: "white" }}
-                  />
-                }
                 actionProvider={ActionProvider}
                 messageParser={MessageParser}
                 saveMessages={saveMessages}
                 messageHistory={loadMessages()}
-                headerText={
-                  <Space >
-                    Exploit CrapBot &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    &nbsp; &nbsp;
-                    <a
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        background: "#0a5e9c",
-                        borderRadius: "0px",
-                      }}
-                      href="##"
-                      onClick={() => toggleBot((prev) => !prev)}
-                    >
-                      <CloseSquareOutlined />
-                    </a>
-                  </Space>
-                }
                 placeholderText={"Type something..."}
-                close="true"
               />
             )}
             <button
               className="app-chatbot-button"
               onClick={() => toggleBot((prev) => !prev)}
             >
-              <PandaIcon style={{ fontSize: "24px" }} />
+              <ChatIcon />
             </button>
           </div>
         </div>

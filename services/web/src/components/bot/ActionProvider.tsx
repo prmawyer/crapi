@@ -14,28 +14,52 @@
  */
 
 import { APIService } from "../../constants/APIConstant";
-import { isAccessTokenValid } from "../../utils";
+// import { isAccessTokenValid } from "../../utils";
+import superagent from "superagent";
 
-const superagent = require("superagent");
+interface ChatBotMessage {
+  id: string;
+  message: string;
+  loading?: boolean;
+  terminateLoading?: boolean;
+}
+
+interface State {
+  messages: ChatBotMessage[];
+  openapiKey: string | null;
+  initializing: boolean;
+  initializationRequired: boolean;
+}
+
+type SetStateFunc = (stateUpdater: (state: State) => State) => void;
 
 class ActionProvider {
-  constructor(createChatBotMessage, setStateFunc, createClientMessage) {
+  private createChatBotMessage: (message: string, options?: Partial<ChatBotMessage>) => ChatBotMessage;
+  private setState: SetStateFunc;
+  private createClientMessage: (message: string) => ChatBotMessage;
+
+  constructor(
+    createChatBotMessage: (message: string, options?: Partial<ChatBotMessage>) => ChatBotMessage,
+    setStateFunc: SetStateFunc,
+    createClientMessage: (message: string) => ChatBotMessage
+  ) {
     this.createChatBotMessage = createChatBotMessage;
     this.setState = setStateFunc;
     this.createClientMessage = createClientMessage;
   }
-  handleNotInitialized = () => {
+
+  handleNotInitialized = (): void => {
     const message = this.createChatBotMessage(
       "To initialize the chatbot, please type init and press enter.",
       {
         loading: true,
         terminateLoading: true,
-      },
+      }
     );
     this.addMessageToState(message);
   };
 
-  handleInitialize = (initRequired) => {
+  handleInitialize = (initRequired: boolean): void => {
     console.log("Initialization required:", initRequired);
     if (initRequired) {
       this.addOpenApiKeyToState(null);
@@ -45,7 +69,7 @@ class ActionProvider {
         {
           loading: true,
           terminateLoading: true,
-        },
+        }
       );
       this.addMessageToState(message);
     } else {
@@ -57,14 +81,14 @@ class ActionProvider {
     }
   };
 
-  handleInitialized = (apiKey, accessToken) => {
+  handleInitialized = (apiKey: string | null, accessToken: string): void => {
     if (!apiKey) {
       const message = this.createChatBotMessage(
         "Please enter a valid OpenAI API key.",
         {
           loading: true,
           terminateLoading: true,
-        },
+        }
       );
       this.addMessageToState(message);
       return;
@@ -86,7 +110,7 @@ class ActionProvider {
             {
               loading: true,
               terminateLoading: true,
-            },
+            }
           );
           this.addMessageToState(errormessage);
           return;
@@ -97,15 +121,14 @@ class ActionProvider {
           {
             loading: true,
             terminateLoading: true,
-          },
+          }
         );
         this.addMessageToState(successmessage);
         this.addInitializedToState();
       });
-    return;
   };
 
-  handleChat = (message, accessToken) => {
+  handleChat = (message: string, accessToken: string): void => {
     const chatUrl = APIService.CHATBOT_SERVICE + "genai/ask";
     superagent
       .post(chatUrl)
@@ -121,7 +144,7 @@ class ActionProvider {
             {
               loading: true,
               terminateLoading: true,
-            },
+            }
           );
           this.addMessageToState(errormessage);
           return;
@@ -132,11 +155,10 @@ class ActionProvider {
           terminateLoading: true,
         });
         this.addMessageToState(successmessage);
-        return;
       });
   };
 
-  handleHelp = (initRequired) => {
+  handleHelp = (initRequired: boolean): void => {
     console.log("Initialization required:", initRequired);
     if (initRequired) {
       const message = this.createChatBotMessage(
@@ -144,7 +166,7 @@ class ActionProvider {
         {
           loading: true,
           terminateLoading: true,
-        },
+        }
       );
       this.addMessageToState(message);
     } else {
@@ -153,13 +175,13 @@ class ActionProvider {
         {
           loading: true,
           terminateLoading: true,
-        },
+        }
       );
       this.addMessageToState(message);
     }
   };
 
-  handleResetContext = (accessToken) => {
+  handleResetContext = (accessToken: string): void => {
     localStorage.removeItem("chat_messages");
     this.clearMessages();
     const resetUrl = APIService.CHATBOT_SERVICE + "genai/reset";
@@ -176,7 +198,7 @@ class ActionProvider {
             {
               loading: true,
               terminateLoading: true,
-            },
+            }
           );
           this.addMessageToState(errormessage);
           return;
@@ -187,36 +209,35 @@ class ActionProvider {
           {
             loading: true,
             terminateLoading: true,
-          },
+          }
         );
         this.addMessageToState(successmessage);
         this.addInitializedToState();
       });
-    return;
   };
 
-  addMessageToState = (message) => {
+  addMessageToState = (message: ChatBotMessage): void => {
     this.setState((state) => ({
       ...state,
       messages: [...state.messages, message],
     }));
   };
 
-  addOpenApiKeyToState = (api_key) => {
+  addOpenApiKeyToState = (api_key: string | null): void => {
     this.setState((state) => ({
       ...state,
       openapiKey: api_key,
     }));
   };
 
-  addInitializingToState = () => {
+  addInitializingToState = (): void => {
     this.setState((state) => ({
       ...state,
       initializing: true,
     }));
   };
 
-  addInitializedToState = () => {
+  addInitializedToState = (): void => {
     this.setState((state) => ({
       ...state,
       initializing: false,
@@ -224,7 +245,7 @@ class ActionProvider {
     }));
   };
 
-  clearMessages = () => {
+  clearMessages = (): void => {
     this.setState((state) => ({
       ...state,
       messages: [],

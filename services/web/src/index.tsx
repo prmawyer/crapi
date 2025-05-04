@@ -18,14 +18,9 @@ import "antd/dist/reset.css";
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import { Provider } from "react-redux";
-<<<<<<< HEAD:services/web/src/index.js
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
-=======
 import React, { useState, useEffect, FC } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
->>>>>>> develop:services/web/src/index.tsx
 import createSagaMiddleware from "redux-saga";
 import storage from "redux-persist/lib/storage";
 import { Spin } from "antd";
@@ -33,11 +28,7 @@ import { authInterceptor } from "./middleware";
 import rootReducer from "./reducers/rootReducer";
 import Layout from "./components/layout/layout";
 import * as serviceWorker from "./serviceWorker";
-<<<<<<< HEAD:services/web/src/index.js
-import { createRoot } from "react-dom/client";
-=======
 import rootSaga from "./sagas";
->>>>>>> develop:services/web/src/index.tsx
 
 const sagaMiddleware = createSagaMiddleware();
 const middlewares = [authInterceptor, sagaMiddleware];
@@ -83,12 +74,6 @@ const AppProvider: FC = () => {
   );
 };
 
-<<<<<<< HEAD:services/web/src/index.js
-const container = document.getElementById("root");
-const root = createRoot(container);
-root.render(<AppProvider />);
-
-=======
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
@@ -97,7 +82,6 @@ root.render(<AppProvider />);
 export default AppProvider;
 
 // ... existing code ...
->>>>>>> develop:services/web/src/index.tsx
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA

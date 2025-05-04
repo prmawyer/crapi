@@ -13,15 +13,28 @@
  * limitations under the License.
  */
 
-import React from "react";
-import close from "react-chatbot-kit";
 import { createChatBotMessage } from "react-chatbot-kit";
-const botName = "CrapBot";
 
-const config = {
+const botName: string = "CrapBot";
+
+interface Config {
+  initialMessages: any[];
+  botName: string;
+  state: Record<string, unknown>;
+  customStyles: {
+    botMessageBox: {
+      backgroundColor: string;
+    };
+    chatButton: {
+      backgroundColor: string;
+    };
+  };
+}
+
+const config: Config = {
   initialMessages: [
     createChatBotMessage(
-      `Hi, Welcome to crAPI! I'm ${botName}, and I'm here to be exploited.`,
+      `Hi, Welcome to crAPI! I'm ${botName}, and I'm here to be exploited.`, {}
     ),
   ],
   botName,

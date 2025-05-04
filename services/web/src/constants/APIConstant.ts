@@ -19,6 +19,7 @@ interface APIServiceType {
   IDENTITY_SERVICE: string;
   WORKSHOP_SERVICE: string;
   COMMUNITY_SERVICE: string;
+  CHATBOT_SERVICE: string;
 }
 
 export const APIService: APIServiceType = {
