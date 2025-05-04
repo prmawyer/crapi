@@ -1,5 +1,6 @@
 .avatar-uploader {
   width: auto;
+  margin-left: 10px;
 }
 
 .page-container {
@@ -13,6 +14,10 @@
 }
 
 .change-email-btn {
+  margin-left: 50px;
+}
+
+.change-phone-number-btn {
   margin-left: 50px;
 }
 

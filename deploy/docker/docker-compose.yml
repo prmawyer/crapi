@@ -18,7 +18,7 @@ services:
     #ports:
     #  - "${LISTEN_IP:-127.0.0.1}:8080:8080"
     volumes:
-      - ./keys:/keys
+      - ./keys:/app/keys
     environment:
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - DB_NAME=crapi
@@ -178,7 +178,9 @@ services:
     image: crapi/crapi-web:${VERSION:-latest}
     ports:
       - "${LISTEN_IP:-127.0.0.1}:8888:80"
+      - "${LISTEN_IP:-127.0.0.1}:30080:80"
       - "${LISTEN_IP:-127.0.0.1}:8443:443"
+      - "${LISTEN_IP:-127.0.0.1}:30443:443"
     environment:
       - COMMUNITY_SERVICE=crapi-community:${COMMUNITY_SERVER_PORT:-8087}
       - IDENTITY_SERVICE=crapi-identity:${IDENTITY_SERVER_PORT:-8080}
@@ -194,7 +196,7 @@ services:
       crapi-workshop:
         condition: service_healthy
     healthcheck:
-      test: curl 0.0.0.0:80/web/health
+      test: curl 0.0.0.0:80/health
       interval: 15s
       timeout: 15s
       retries: 15
@@ -276,7 +278,7 @@ services:
     #ports:
     #  - "${LISTEN_IP:-127.0.0.1}:8443:443" # https
     healthcheck:
-      test: echo -n "GET / HTTP/1.1\n\n\n" > /dev/tcp/127.0.0.1/443
+      test: bash -c 'echo -n "GET / HTTP/1.1\n\n" > /dev/tcp/127.0.0.1/443'
       interval: 15s
       timeout: 15s
       retries: 15
