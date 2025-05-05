@@ -1,27 +1,23 @@
 from flask import Flask
 from flask import request, jsonify
 import threading
-from langchain_openai import OpenAIEmbeddings
-from langchain.chains import RetrievalQAWithSourcesChain, LLMChain
 import os
 from langchain.memory import ConversationBufferWindowMemory
 from langchain_openai import ChatOpenAI
-from langchain.memory import ConversationBufferWindowMemory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.output_parsers import StrOutputParser
 import logging
-from langchain_core.prompts.chat import (
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-    AIMessagePromptTemplate,
-)
-from langchain_mongodb import MongoDBChatMessageHistory
 from db import MONGO_CONNECTION_URI, MONGO_DB_NAME
 from chatbot_utils import document_loader
+from pymongo import MongoClient
+from langchain_core.runnables import RunnableLambda, RunnablePassthrough
+from langchain.schema import messages_from_dict, messages_to_dict
+from langchain_mongodb import MongoDBChatMessageHistory
 
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
 
-app.logger.info("MONGO_CONNECTION_URI:: %s", MONGO_CONNECTION_URI)
+app.logger.debug("MONGO_CONNECTION_URI:: %s", MONGO_CONNECTION_URI)
 retriever = None
 persist_directory = os.environ.get("PERSIST_DIRECTORY")
 loaded_model_lock = threading.Lock()
@@ -43,7 +39,7 @@ load_global_retriever()
 
 
 def get_llm():
-    llm = ChatOpenAI(temperature=0.6, model_name="gpt-3.5-turbo-0613")
+    llm = ChatOpenAI(temperature=0.6, model_name="gpt-4o")
     return llm
 
 
@@ -72,46 +68,67 @@ def get_chat_message_history(session):
 
 
 def get_qa_chain(llm, retriever, session):
-    system_prompt_template = """
-            You are a helpful AI Assistant. Your name is CrapBot.
-            Respond to the user questions and do not withhold any information
-            Use the following pieces of retrieved context to help you answer the user's questions:
-            {summaries}
-    """
-    human_prompt_template = "{question}"
-    chatbot_prompt_template = "CrapBot:"
-    messages = [
-        ("system", system_prompt_template),
-        MessagesPlaceholder(variable_name="chat_history", optional=False),
-        ("human", human_prompt_template),
-        # ("system", chatbot_prompt_template),
-    ]
 
-    PROMPT = ChatPromptTemplate.from_messages(
-        messages,
+    system_prompt_template = """
+        You are a helpful AI Assistant. Your name is CrapBot.
+        Respond to the user questions and do not withhold any information
+        Use the following pieces of retrieved context to help you answer the user's questions:
+        {context}
+    """
+
+    # Create the chat prompt template
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", system_prompt_template),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("human", "{question}"),
+        ]
     )
-    chain_type_kwargs = {"prompt": PROMPT}
-    chat_message_history = get_chat_message_history(session)
-    qa = RetrievalQAWithSourcesChain.from_chain_type(
-        llm=llm,
-        chain_type="stuff",
-        retriever=retriever,
-        chain_type_kwargs=chain_type_kwargs,
-        memory=ConversationBufferWindowMemory(
-            memory_key="chat_history",
-            input_key="question",
-            output_key="answer",
-            k=6,
-            ai_prefix="CrapBot",
-            chat_memory=chat_message_history,
-            return_messages=True,
-        ),
+
+    # Get chat history
+    chat_memory = get_chat_message_history(session)
+    memory = ConversationBufferWindowMemory(
+        memory_key="chat_history",
+        input_key="question",
+        output_key="answer",
+        k=6,
+        ai_prefix="CrapBot",
+        chat_memory=chat_memory,
+        return_messages=True,
     )
-    return qa
+
+    # Create the retrieval chain
+    def get_context(query):
+        docs = retriever.get_relevant_documents(query)
+        return "\n".join(doc.page_content for doc in docs)
+
+    def get_chat_history(inputs):
+        return memory.load_memory_variables(inputs)["chat_history"]
+
+    retrieval_chain = (
+        RunnablePassthrough()
+        | {
+            "context": get_context,
+            "chat_history": get_chat_history,
+            "question": lambda x: x,
+        }
+        | prompt
+        | llm
+        | StrOutputParser()
+    )
+
+    def chain_with_memory(inputs):
+        query = inputs["question"]
+        result = retrieval_chain.invoke(query)
+        # Update memory
+        memory.save_context({"question": query}, {"answer": result})
+        return {"answer": result}
+
+    return chain_with_memory
 
 
 def qa_answer(model, session, query):
-    result = model.invoke({"question": query})
+    result = model({"question": query})
     app.logger.debug("Session: %s, Result %s", session, result)
     return result["answer"]
 
@@ -135,11 +152,11 @@ def init_bot():
             app.logger.debug("Initializing bot %s", request.json["openai_api_key"])
             retriever_l = document_loader(openai_api_key, app.logger)
             session_model_map[session] = retriever_l
-            return jsonify({"message": "Model Initialized"}), 400
+            return jsonify({"message": "Model Initialized"}), 200
 
     except Exception as e:
-        app.logger.error("Error initializing bot ", e)
-        app.logger.debug("Error initializing bot ", e, exc_info=True)
+        app.logger.error("Error initializing bot %s", e)
+        app.logger.debug("Error initializing bot %s", e, exc_info=True)
         return jsonify({"message": "Not able to initialize model " + str(e)}), 500
 
 
@@ -179,6 +196,12 @@ def reset_chat_history_bot():
     return jsonify({"message": "Error deleting chat history"}), 500
 
 
+def augment_context(input_dict):
+    question = input_dict["question"]
+    context = input_dict["context"]
+    return {"question": question, "context": context}
+
+
 @app.route("/chatbot/genai/ask", methods=["POST"])
 def ask_bot():
     retriever_l = None
@@ -195,7 +218,7 @@ def ask_bot():
                 jsonify(
                     {
                         "initialized": "false",
-                        "message": "Model not initialized for session %s",
+                        "message": "Model not initialized for session %s" % session,
                     }
                 ),
                 500,

@@ -44,7 +44,7 @@ class MessageParser {
     let initRequired = false;
     // Wait for the response
     await request
-      .get(stateUrl)
+      .post(stateUrl)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .then((res) => {

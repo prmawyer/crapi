@@ -111,7 +111,7 @@ const ChatBotComponent: React.FC<ChatBotComponentProps> = (props) => {
       let initRequired = false;
       // Wait for the response
       await superagent
-        .get(stateUrl)
+        .post(stateUrl)
         .set("Accept", "application/json")
         .set("Content-Type", "application/json")
         .then((res: any) => {

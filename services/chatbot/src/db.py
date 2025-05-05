@@ -6,9 +6,15 @@ MONGO_HOST = os.environ.get("MONGO_HOST", "mongodb")
 MONGO_PORT = os.environ.get("MONGO_PORT", "27017")
 MONGO_DB_NAME = os.environ.get("MONGO_DB_NAME", "crapi")
 
-MONGO_CONNECTION_URI = "mongodb://%s:%s@%s:%s" % (
+MONGO_CONNECTION_URI = "mongodb://%s:%s@%s:%s/?directConnection=true" % (
     MONGO_USER,
     MONGO_PASSWORD,
     MONGO_HOST,
     MONGO_PORT,
+)
+
+MONGO_CONNECTION_URI_ATLAS = "mongodb+srv://%s:%s@%s?retryWrites=true&w=majority" % (
+    MONGO_USER,
+    MONGO_PASSWORD,
+    MONGO_HOST,
 )
