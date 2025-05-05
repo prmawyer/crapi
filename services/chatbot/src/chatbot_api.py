@@ -25,6 +25,8 @@ working_key_event = threading.Event()
 
 session_model_map = {}
 
+session_api_key_map = {}
+
 
 def load_global_retriever():
     global retriever
@@ -38,8 +40,8 @@ def load_global_retriever():
 load_global_retriever()
 
 
-def get_llm():
-    llm = ChatOpenAI(temperature=0.6, model_name="gpt-4o")
+def get_llm(api_key: str):
+    llm = ChatOpenAI(temperature=0.6, model_name="gpt-4o", api_key=api_key)
     return llm
 
 
@@ -133,13 +135,23 @@ def qa_answer(model, session, query):
     return result["answer"]
 
 
+def get_session_id(request):
+    client_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    auth_header = request.headers.get("Authorization")
+    if auth_header:
+        auth_header = auth_header.strip().split(" ")
+        if auth_header[0].lower() == "bearer" and len(auth_header) == 2:
+            return auth_header[1]
+    return client_ip
+
+
 @app.route("/chatbot/genai/init", methods=["POST"])
 def init_bot():
     app.logger.debug("Initializing bot")
     try:
         with loaded_model_lock:
-            client_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
-            session = request.headers.get("authorization", client_ip)
+            session = get_session_id(request)
+            app.logger.debug("Initializing bot for session %s", session)
             if os.environ.get("CHATBOT_OPENAI_API_KEY"):
                 app.logger.info(
                     "Model already initialized with OpenAI API Key from environment"
@@ -149,9 +161,10 @@ def init_bot():
                 app.logger.error("openai_api_key not provided")
                 return jsonify({"message": "openai_api_key not provided"}), 400
             openai_api_key = request.json["openai_api_key"]
-            app.logger.debug("Initializing bot %s", request.json["openai_api_key"])
+            app.logger.debug("OpenAI API Key %s", openai_api_key[:5])
             retriever_l = document_loader(openai_api_key, app.logger)
             session_model_map[session] = retriever_l
+            session_api_key_map[session] = openai_api_key
             return jsonify({"message": "Model Initialized"}), 200
 
     except Exception as e:
@@ -163,8 +176,7 @@ def init_bot():
 @app.route("/chatbot/genai/state", methods=["POST"])
 def state_bot():
     app.logger.debug("Checking state")
-    client_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
-    session = request.headers.get("authorization", client_ip)
+    session = get_session_id(request)
     app.logger.debug("Checking state for session %s", session)
     try:
         if working_key_event.is_set():
@@ -187,8 +199,8 @@ def state_bot():
 
 @app.route("/chatbot/genai/reset", methods=["POST"])
 def reset_chat_history_bot():
-    client_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
-    session = request.headers.get("authorization", client_ip)
+    session = get_session_id(request)
+    app.logger.debug("Resetting chat history for session %s", session)
 
     result = delete_chat_message_history(session=session)
     if result:
@@ -205,13 +217,15 @@ def augment_context(input_dict):
 @app.route("/chatbot/genai/ask", methods=["POST"])
 def ask_bot():
     retriever_l = None
-    client_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
-    session = request.headers.get("authorization", client_ip)
+    api_key_l = None
+    session = get_session_id(request)
     if retriever:
         retriever_l = retriever
+        api_key_l = os.environ.get("CHATBOT_OPENAI_API_KEY")
     else:
         with loaded_model_lock:
             retriever_l = session_model_map.get(session)
+            api_key_l = session_api_key_map.get(session)
         if retriever_l is None:
             app.logger.error("Model not initialized for session %s", session)
             return (
@@ -223,9 +237,9 @@ def ask_bot():
                 ),
                 500,
             )
-    app.logger.debug("Asking bot")
+    app.logger.debug("Asking bot for session %s", session)
     question = request.json["question"]
-    llm = get_llm()
+    llm = get_llm(api_key_l)
     model = get_qa_chain(llm, retriever_l, session)
     answer = qa_answer(model, session, question)
     return jsonify({"initialized": "true", "answer": answer}), 200

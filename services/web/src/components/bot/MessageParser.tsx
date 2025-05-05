@@ -47,6 +47,7 @@ class MessageParser {
       .post(stateUrl)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${this.state.accessToken}`)
       .then((res) => {
         console.log("I response:", res.body);
         if (res.status === 200) {
