@@ -10,8 +10,10 @@ spec:
   - protocol: TCP
     port: {{ .Values.web.port }}
     nodePort: {{ .Values.web.service.nodePort }}
+    name: nodeport
   - port: {{ .Values.web.sslPort }}
     nodePort: {{ .Values.web.service.sslNodePort }}
+    name: nodeport-ssl
   type: NodePort
   selector:
     {{- toYaml .Values.web.serviceSelectorLabels | nindent 4 }}
