@@ -28,22 +28,26 @@ web:
     name: crapi-web
     labels:
       app: crapi-web
-      backstage.io/kubernetes-id: crapiweb
+      backstage.io/kubernetes-id: crapi-web
     nodePort: 30080
     sslNodePort: 30443
   config:
     name: crapi-web-configmap
     labels:
       app: crapi-web
+      backstage.io/kubernetes-id: crapi-web
   deploymentLabels:
     app: crapi-web
-    backstage.io/kubernetes-id: crapiweb
+    backstage.io/kubernetes-id: crapi-web
   podLabels:
     app: crapi-web
+    backstage.io/kubernetes-id: crapi-web
   deploymentSelectorMatchLabels:
     app: crapi-web
+    backstage.io/kubernetes-id: crapi-web
   serviceSelectorLabels:
     app: crapi-web
+    backstage.io/kubernetes-id: crapi-web
 
 identity:
   name: crapi-identity
