@@ -28,7 +28,7 @@ web:
     name: crapi-web
     labels:
       app: crapi-web
-      backstage.io/kubernetes-id: crapi-web
+      backstage.io/kubernetes-id: crapiweb
     nodePort: 30080
     sslNodePort: 30443
   config:
@@ -37,7 +37,7 @@ web:
       app: crapi-web
   deploymentLabels:
     app: crapi-web
-    backstage.io/kubernetes-id: crapi-web
+    backstage.io/kubernetes-id: crapiweb
   podLabels:
     app: crapi-web
   deploymentSelectorMatchLabels:
