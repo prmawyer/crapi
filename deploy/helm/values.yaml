@@ -44,10 +44,8 @@ web:
     backstage.io/kubernetes-id: crapi-web
   deploymentSelectorMatchLabels:
     app: crapi-web
-    backstage.io/kubernetes-id: crapi-web
   serviceSelectorLabels:
     app: crapi-web
-    backstage.io/kubernetes-id: crapi-web
 
 identity:
   name: crapi-identity
