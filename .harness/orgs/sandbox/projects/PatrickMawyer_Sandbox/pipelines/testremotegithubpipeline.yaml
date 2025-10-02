@@ -1,0 +1,23 @@
+pipeline:
+  name: test-remote-github-pipeline
+  identifier: testremotegithubpipeline
+  projectIdentifier: PatrickMawyer_Sandbox
+  orgIdentifier: sandbox
+  tags: {}
+  stages:
+    - stage:
+        name: Chaos Experiments
+        identifier: Chaos_Experiments
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: Chaos
+                  name: Chaos_1
+                  identifier: Chaos_1
+                  spec:
+                    experimentRef: 26948f50-28ae-499a-96ae-8110b672264c
+                    expectedResilienceScore: 50
+        tags: {}
