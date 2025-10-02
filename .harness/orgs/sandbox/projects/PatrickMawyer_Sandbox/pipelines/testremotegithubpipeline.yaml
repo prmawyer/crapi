@@ -60,6 +60,29 @@ pipeline:
                 - AllErrors
               action:
                 type: StageRollback
+    - stage:
+        name: another test stage
+        identifier: another_test_stage
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: echo test
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+        tags: {}
   properties:
     ci:
       codebase:
