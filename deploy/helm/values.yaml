@@ -14,7 +14,8 @@ jwtExpiration: 604800000
 logLevel: INFO
 
 waitForK8sResources:
-  image: groundnuty/k8s-wait-for:v1.3
+  enabled: True
+  image: groundnuty/k8s-wait-for:v2.0
   imagePullPolicy: IfNotPresent
 
 web:
@@ -27,16 +28,20 @@ web:
     name: crapi-web
     labels:
       app: crapi-web
+      backstage.io/kubernetes-id: crapi-web
     nodePort: 30080
     sslNodePort: 30443
   config:
     name: crapi-web-configmap
     labels:
       app: crapi-web
+      backstage.io/kubernetes-id: crapi-web
   deploymentLabels:
     app: crapi-web
+    backstage.io/kubernetes-id: crapi-web
   podLabels:
     app: crapi-web
+    backstage.io/kubernetes-id: crapi-web
   deploymentSelectorMatchLabels:
     app: crapi-web
   serviceSelectorLabels:
@@ -186,13 +191,23 @@ mongodb:
     mongoPassword: crapisecretpassword
     mongoDbName: crapi
     mongoUri: "admin:crapisecretpassword@mongodb:27017"
-  pvc:
-    name: mongodb-pv-claim
-    labels:
-      app: mongodb
-    resources:
-      requests:
-        storage: 2Gi
+  storage: 
+    # type: "manual"
+    # pv:
+    #   name: mongodb-pv
+    #   labels:
+    #     app: mongodb
+    #   resources:
+    #     storage: 2Gi
+    #   hostPath: /mnt/test
+    type: "default"
+    pvc:
+      name: mongodb-pv-claim
+      labels:
+        app: mongodb
+      resources:
+        requests:
+          storage: 2Gi
   serviceSelectorLabels:
     app: mongodb
   podLabels:
@@ -220,13 +235,23 @@ postgresdb:
     postgresUser: admin
     postgresPassword: crapisecretpassword
     postgresDbName: crapi
-  pvc:
-    name: postgres-pv-claim
-    labels:
-      app: postgresdb
-    resources:
-      requests:
-        storage: 2Gi
+  storage:
+    # type: "manual"
+    # pv:
+    #   name: postgres-pv
+    #   labels:
+    #     app: postgresdb
+    #   resources:
+    #     storage: 2Gi
+    #   hostPath: /mnt/test
+    type: "default"
+    pvc:
+      name: postgres-pv-claim
+      labels:
+        app: postgresdb
+      resources:
+        requests:
+          storage: 2Gi
   serviceSelectorLabels:
     app: postgresdb
   podLabels:

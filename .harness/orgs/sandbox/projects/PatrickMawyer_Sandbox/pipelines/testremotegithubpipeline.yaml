@@ -1,0 +1,91 @@
+pipeline:
+  name: test-remote-github-pipeline
+  identifier: testremotegithubpipeline
+  projectIdentifier: PatrickMawyer_Sandbox
+  orgIdentifier: sandbox
+  tags: {}
+  stages:
+    - stage:
+        name: Chaos Experiments
+        identifier: Chaos_Experiments
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: Chaos
+                  name: Chaos_1
+                  identifier: Chaos_1
+                  spec:
+                    experimentRef: 26948f50-28ae-499a-96ae-8110b672264c
+                    expectedResilienceScore: 50
+        tags: {}
+    - stage:
+        name: test deploy
+        identifier: test_deploy
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: Kubernetes
+          service:
+            serviceRef: patrickmawyercrAPI
+          environment:
+            environmentRef: patrickmawyerorbstack
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: patrickmawyerorbstackk8s
+          execution:
+            steps:
+              - step:
+                  name: Rollout Deployment
+                  identifier: rolloutDeployment
+                  type: K8sRollingDeploy
+                  timeout: 10m
+                  spec:
+                    skipDryRun: false
+                    pruningEnabled: false
+            rollbackSteps:
+              - step:
+                  name: Rollback Rollout Deployment
+                  identifier: rollbackRolloutDeployment
+                  type: K8sRollingRollback
+                  timeout: 10m
+                  spec:
+                    pruningEnabled: false
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+    - stage:
+        name: another test stage
+        identifier: another_test_stage
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: echo test
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+        tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: pmawyergithubconnector
+        repoName: crapi
+        build: <+input>
