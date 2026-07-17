@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_crapi_1784295397626-push-trigger-input-set
+  identifier: Build_crapi_1784295397626pushtriggerinputset
+  orgIdentifier: sandbox
+  projectIdentifier: PatrickMawyer_Sandbox
+  pipeline:
+    identifier: Build_crapi_1784295397626
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: <+trigger.branch>
