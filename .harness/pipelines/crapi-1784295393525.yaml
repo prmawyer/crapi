@@ -19,6 +19,19 @@ pipeline:
                   spec:
                     shell: Sh
                     command: echo "Welcome to Harness CI"
+              - step:
+                  type: HarnessSAST
+                  name: HarnessCode SAST-SCA
+                  identifier: HarnessCode_SASTSCA
+                  spec:
+                    mode: orchestration
+                    config: sast_sca
+                    target:
+                      type: repository
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
           platform:
             os: Linux
             arch: Amd64
