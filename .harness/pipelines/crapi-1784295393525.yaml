@@ -35,5 +35,6 @@ pipeline:
     ci:
       codebase:
         connectorRef: pmawyergithubconnector
+        repoName: crapi
         build: <+input>
         sparseCheckout: []
