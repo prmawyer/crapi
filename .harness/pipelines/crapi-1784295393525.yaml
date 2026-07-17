@@ -13,13 +13,6 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: Run
-                  name: Echo Welcome Message
-                  identifier: Echo_Welcome_Message
-                  spec:
-                    shell: Sh
-                    command: echo "Welcome to Harness CI"
-              - step:
                   type: HarnessSAST
                   name: HarnessCode SAST-SCA
                   identifier: HarnessCode_SASTSCA
@@ -42,5 +35,5 @@ pipeline:
     ci:
       codebase:
         connectorRef: pmawyergithubconnector
-        repoName: crapi
         build: <+input>
+        sparseCheckout: []
