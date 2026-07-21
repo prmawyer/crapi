@@ -1,0 +1,45 @@
+# This workflow integrates Qwiet preZero with GitHub
+# Visit https://docs.shiftleft.io for help
+name: Harness-SCS
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    # We recommend triggering a scan when merging to your default branch
+    # as a best practice, especially if you'd like to compare the results
+    # of two scans (e.g., a feature branch against the default branch)
+    branches:
+      - main
+      - master
+jobs:
+  scs-generate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: SBOM Generation
+      uses: harness/github-actions/sbom-generation@1.1.0
+      with:
+        HARNESS_ACCOUNT_URL: https://app.harness.io
+        HARNESS_ACCOUNT_ID: EeRjnXTnS4GrLG5VNNJZUw
+        HARNESS_ORG_ID: sandbox
+        HARNESS_PROJECT_ID: PatrickMawyer_Sandbox
+        HARNESS_API_KEY: ${{ secrets.HARNESS_API_KEY }}
+        TARGET: <image>:<tag>
+        TOOL: Syft
+        FORMAT: spdx-json
+        ATTEST: true
+        KMS_KEY: <path_to_your_key>
+
+    - name: SLSA Provenance Generation
+      uses: harness/github-actions/slsa-generation@1.1.0
+      with:
+        HARNESS_ACCOUNT_URL: https://app.harness.io
+        HARNESS_ACCOUNT_ID: EeRjnXTnS4GrLG5VNNJZUw
+        HARNESS_ORG_ID: sandbox
+        HARNESS_PROJECT_ID: PatrickMawyer_Sandbox
+        HARNESS_API_KEY: ${{ secrets.HARNESS_API_KEY }}
+        TARGET: <image>:<tag>
+        ATTEST: true
+        KMS_KEY: <path_to_your_key>
