@@ -36,3 +36,18 @@ jobs:
 
       env:
         SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
+
+    - name: SBOM Generation
+      uses: harness/github-actions/sbom-generation@1.1.0
+      with:
+        HARNESS_ACCOUNT_URL: https://app.harness.io
+        HARNESS_ACCOUNT_ID: EeRjnXTnS4GrLG5VNNJZUw
+        HARNESS_ORG_ID: sandbox
+        HARNESS_PROJECT_ID: PatrickMawyer_Sandbox
+        HARNESS_API_KEY: ${{ secrets.HARNESS_API_KEY }}
+        TARGET: <image>:<tag>
+        TOOL: Syft
+        FORMAT: spdx-json
+        ATTEST: true
+        KMS_KEY: <path_to_your_key>
+
