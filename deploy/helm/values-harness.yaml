@@ -20,7 +20,7 @@ waitForK8sResources:
 
 web:
   name: crapi-web
-  image: prmawyer/crapi-web
+  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/crapi-web
   replicaCount: 1
   port: 80
   sslPort: 443
@@ -45,7 +45,7 @@ web:
 
 identity:
   name: crapi-identity
-  image: prmawyer/crapi-identity
+  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/crapi-identity
   port: 8080
   replicaCount: 1
   service:
@@ -87,7 +87,7 @@ identity:
 
 community:
   name: crapi-community
-  image: prmawyer/crapi-community
+  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/crapi-community
   port: 8087
   replicaCount: 1
   service:
@@ -111,7 +111,7 @@ community:
 
 workshop:
   name: crapi-workshop
-  image: prmawyer/crapi-workshop
+  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/crapi-workshop
   port: 8000
   replicaCount: 1
   service:
@@ -136,7 +136,7 @@ workshop:
 
 mailhog:
   name: mailhog
-  image: prmawyer/mailhog
+  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/mailhog
   webPort: 8025
   smtpPort: 1025
   replicaCount: 1
@@ -259,7 +259,7 @@ postgresdb:
 
 apiGatewayService:
   name: gateway-service
-  image: prmawyer/gateway-service
+  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/gateway-service
   port: 443
   replicaCount: 1
   service:
