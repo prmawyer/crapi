@@ -10,7 +10,8 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/lithammer/shortuuid v3.0.0+incompatible
 	go.mongodb.org/mongo-driver v1.3.5
-	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899
+	golang.org/x/crypto v0.31.0
+	// golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899
 )
 
 require (
