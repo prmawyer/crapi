@@ -88,6 +88,8 @@ identity:
     app: crapi-identity
   serviceSelectorLabels:
     app: crapi-identity
+  podAnnotations:
+    harness.io/direct-apply: true
 
 community:
   name: crapi-community
@@ -112,6 +114,8 @@ community:
     app: crapi-community
   serviceSelectorLabels:
     app: crapi-community
+  podAnnotations:
+    harness.io/direct-apply: true
 
 workshop:
   name: crapi-workshop
@@ -137,6 +141,8 @@ workshop:
     app: crapi-workshop
   serviceSelectorLabels:
     app: crapi-workshop
+  podAnnotations:
+    harness.io/direct-apply: true
 
 mailhog:
   name: mailhog
@@ -171,6 +177,8 @@ mailhog:
     app: mailhog
   serviceSelectorLabels:
     app: mailhog
+  podAnnotations:
+    harness.io/direct-apply: true
 
 mongodb:
   name: mongodb
@@ -216,6 +224,8 @@ mongodb:
     app: mongodb
   statefulsetSelectorMatchLabels:
     app: mongodb
+  podAnnotations:
+    harness.io/direct-apply: true
 
 postgresdb:
   name: postgresdb
@@ -260,6 +270,8 @@ postgresdb:
     app: postgresdb
   statefulsetSelectorMatchLabels:
     app: postgresdb
+  podAnnotations:
+    harness.io/direct-apply: true
 
 apiGatewayService:
   name: gateway-service
@@ -282,3 +294,5 @@ apiGatewayService:
     app: gateway-service
   serviceSelectorLabels:
     app: gateway-service
+  podAnnotations:
+    harness.io/direct-apply: true
