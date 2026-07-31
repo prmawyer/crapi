@@ -17,11 +17,7 @@ spec:
       labels:
         release: {{ .Release.Name }}
         {{- toYaml .Values.web.podLabels | nindent 8 }}
-    spec:
-      {{- if .Values.dockercfg}}  
-      imagePullSecrets:  
-      - name: {{.Values.name}}-dockercfg  
-      {{- end}}  
+    spec: 
       containers:
         - name: {{ .Values.web.name }}
           image: {{ .Values.web.image }}:{{ .Chart.AppVersion }}
