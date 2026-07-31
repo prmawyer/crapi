@@ -13,7 +13,6 @@ apiGatewayPassword:
 tlsEnabled: false
 jwtExpiration: 604800000
 logLevel: INFO
-dockercfg: <+artifacts.primary.imagePullSecret>
 createNamespace: true  
 namespace: <+infra.namespace> 
 
@@ -24,7 +23,7 @@ waitForK8sResources:
 
 web:
   name: crapi-web
-  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/crapi-web
+  image: prmawyer/crapi-web
   replicaCount: 1
   port: 80
   sslPort: 443
@@ -49,7 +48,7 @@ web:
 
 identity:
   name: crapi-identity
-  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/crapi-identity
+  image: prmawyer/crapi-identity
   port: 8080
   replicaCount: 1
   service:
@@ -91,7 +90,7 @@ identity:
 
 community:
   name: crapi-community
-  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/crapi-community
+  image: prmawyer/crapi-community
   port: 8087
   replicaCount: 1
   service:
@@ -115,7 +114,7 @@ community:
 
 workshop:
   name: crapi-workshop
-  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/crapi-workshop
+  image: prmawyer/crapi-workshop
   port: 8000
   replicaCount: 1
   service:
@@ -140,7 +139,7 @@ workshop:
 
 mailhog:
   name: mailhog
-  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/mailhog
+  image: prmawyer/mailhog
   webPort: 8025
   smtpPort: 1025
   replicaCount: 1
@@ -263,7 +262,7 @@ postgresdb:
 
 apiGatewayService:
   name: gateway-service
-  image: pkg.harness.io/eerjnxtns4grlg5vnnjzuw/crapi-mawyer/gateway-service
+  image: prmawyer/gateway-service
   port: 443
   replicaCount: 1
   service:
