@@ -2,6 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+name: crapi
 jwtSecret: crapi
 enableLog4j: true
 enableShellInjection: true
@@ -12,6 +13,9 @@ apiGatewayPassword:
 tlsEnabled: false
 jwtExpiration: 604800000
 logLevel: INFO
+dockercfg: <+artifacts.primary.imagePullSecret>
+createNamespace: true  
+namespace: <+infra.namespace> 
 
 waitForK8sResources:
   enabled: True
