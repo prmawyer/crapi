@@ -10,6 +10,7 @@ on:
     branches:
       - main
       - master
+      - develop
 jobs:
   scs-generate:
     runs-on: ubuntu-latest
@@ -24,7 +25,7 @@ jobs:
         HARNESS_ORG_ID: sandbox
         HARNESS_PROJECT_ID: PatrickMawyer_Sandbox
         HARNESS_API_KEY: ${{ secrets.HARNESS_API_KEY }}
-        TARGET: <image>:<tag>
+        TARGET: crapi-web:latest
         TOOL: Syft
         FORMAT: spdx-json
         ATTEST: true
@@ -38,6 +39,6 @@ jobs:
         HARNESS_ORG_ID: sandbox
         HARNESS_PROJECT_ID: PatrickMawyer_Sandbox
         HARNESS_API_KEY: ${{ secrets.HARNESS_API_KEY }}
-        TARGET: <image>:<tag>
+        TARGET: crapi-web:latest
         ATTEST: true
         KMS_KEY: <path_to_your_key>
